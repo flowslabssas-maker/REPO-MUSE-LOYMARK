@@ -4,15 +4,20 @@ const COOKIE = 'muse_hero_session';
 const MAX_AGE = 8 * 60 * 60;
 const BACKEND = 'https://muse-l81e.onrender.com';
 
+export function normalizeEmail(value) {
+  return String(value || '').normalize('NFKC').replace(/[\s\p{Cf}]/gu, '').toLowerCase();
+}
+
 export function allowed(email) {
-  if (directAllowed(email)) return true;
+  const normalized = normalizeEmail(email);
+  if (directAllowed(normalized)) return true;
   const list = (process.env.HERO_ALLOWED_EMAILS || 'ivon.lopez@mergeto.co,maria.garcia@mergeto.co,diegodimon1902@gmail.com')
     .split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
-  return list.includes(String(email || '').trim().toLowerCase());
+  return list.includes(normalized);
 }
 
 export function directAllowed(email) {
-  const normalized = String(email || '').trim().toLowerCase();
+  const normalized = normalizeEmail(email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalized)) return false;
   const domains = (process.env.HERO_DIRECT_DOMAINS || 'hmclcolombia.com')
     .split(',').map(value => value.trim().toLowerCase().replace(/^@/, '')).filter(Boolean);

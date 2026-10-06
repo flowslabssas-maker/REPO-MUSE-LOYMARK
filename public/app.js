@@ -6,7 +6,7 @@ let stopFigure = () => {};
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[char]));
-const normalizeEmail = value => String(value || '').normalize('NFKC').replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+const normalizeEmail = value => String(value || '').normalize('NFKC').replace(/[\s\p{Cf}]/gu, '').toLowerCase();
 
 async function api(action, method = 'GET', body) {
   const response = await fetch(`/api/auth?action=${action}`, {

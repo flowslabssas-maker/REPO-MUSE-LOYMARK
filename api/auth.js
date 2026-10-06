@@ -1,4 +1,4 @@
-import { allowed, clearCookie, createSession, directAllowed, museOtp, readSession, secretReady, sessionCookie } from './_auth.js';
+import { allowed, clearCookie, createSession, directAllowed, museOtp, normalizeEmail, readSession, secretReady, sessionCookie } from './_auth.js';
 
 export default async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store');
@@ -17,7 +17,7 @@ export default async function handler(request, response) {
     return response.status(200).json({ ok: true });
   }
 
-  const email = String(request.body?.email || '').normalize('NFKC').replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
+  const email = normalizeEmail(request.body?.email);
   if (!allowed(email)) return response.status(403).json({ error: 'Correo no autorizado para HERO.' });
   try {
     if (action === 'enter' && directAllowed(email)) {
