@@ -1,6 +1,7 @@
 const app = document.getElementById('app');
 let currentEmail = '';
 let stopStars = () => {};
+let stopFigure = () => {};
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -19,10 +20,12 @@ async function api(action, method = 'GET', body) {
   return data;
 }
 
-function stars(canvas) {
+function stars(canvas, formMode = false) {
   const context = canvas.getContext('2d');
-  const particles = Array.from({ length: 2200 }, () => ({
-    x: Math.random(), y: Math.random(), radius: Math.random() > .94 ? 2 + Math.random() * 3 : .35 + Math.random() * 1.5,
+  const particles = Array.from({ length: formMode ? 700 : 5600 }, () => ({
+    x: Math.random() > .28 ? .5 + (Math.random() + Math.random() + Math.random() - 1.5) * .31 : Math.random(),
+    y: Math.random() > .28 ? .5 + (Math.random() + Math.random() + Math.random() - 1.5) * .43 : Math.random(),
+    radius: Math.random() > .975 ? 2 + Math.random() * 2.6 : .25 + Math.random() * 1.1,
     gold: Math.random() > .52, phase: Math.random() * 6.3, speed: .3 + Math.random() * 1.2,
   }));
   let width = 0, height = 0, frame = 0, active = true;
@@ -41,7 +44,9 @@ function stars(canvas) {
       context.fillStyle = star.gold ? `rgba(255,208,35,${alpha})` : `rgba(255,255,255,${alpha})`;
       if (star.radius > 2) { context.shadowBlur = 9; context.shadowColor = star.gold ? '#f5bd11' : '#fff'; }
       else context.shadowBlur = 0;
-      context.beginPath(); context.arc(star.x * width, star.y * height, star.radius, 0, Math.PI * 2); context.fill();
+      const x = ((star.x + time * .0000008 * star.speed) % 1 + 1) % 1;
+      const y = star.y + Math.sin(time * .00025 * star.speed + star.phase) * .008;
+      context.beginPath(); context.arc(x * width, y * height, star.radius, 0, Math.PI * 2); context.fill();
     }
     frame = requestAnimationFrame(draw);
   };
@@ -49,17 +54,95 @@ function stars(canvas) {
   return () => { active = false; cancelAnimationFrame(frame); window.removeEventListener('resize', resize); };
 }
 
+function weave(canvas, source) {
+  const context = canvas.getContext('2d');
+  if (!context) return () => {};
+  const sample = document.createElement('canvas');
+  sample.width = sample.height = 180;
+  const sampleContext = sample.getContext('2d', { willReadFrequently: true });
+  let points = [], links = [], frame = 0, active = true, lastDraw = 0;
+  const resize = () => {
+    const ratio = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(canvas.clientWidth * ratio);
+    canvas.height = Math.round(canvas.clientHeight * ratio);
+    context.setTransform(canvas.width / 180, 0, 0, canvas.height / 180, 0, 0);
+  };
+  const prepare = () => {
+    sampleContext.drawImage(source, 0, 0, 180, 180);
+    const pixels = sampleContext.getImageData(0, 0, 180, 180).data;
+    points = [];
+    const buckets = new Map();
+    for (let y = 0; y < 180; y++) for (let x = 0; x < 180; x++) {
+      const offset = (y * 180 + x) * 4;
+      if (pixels[offset] < 70 || Math.random() < .42) continue;
+      const point = { x, y, phase: Math.random() * 6.28, bright: Math.random() > .976 };
+      const index = points.push(point) - 1;
+      const key = `${Math.floor(x / 6)},${Math.floor(y / 6)}`;
+      if (!buckets.has(key)) buckets.set(key, []);
+      buckets.get(key).push(index);
+    }
+    links = [];
+    for (let index = 0; index < points.length; index++) {
+      const point = points[index];
+      const bx = Math.floor(point.x / 6), by = Math.floor(point.y / 6);
+      const near = [];
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        for (const candidate of buckets.get(`${bx + dx},${by + dy}`) || []) {
+          if (candidate <= index) continue;
+          const other = points[candidate];
+          const distance = (point.x - other.x) ** 2 + (point.y - other.y) ** 2;
+          if (distance > 2 && distance < 36) near.push({ candidate, distance });
+        }
+      }
+      near.sort((a, b) => a.distance - b.distance);
+      for (const item of near.slice(0, 2)) links.push([index, item.candidate]);
+    }
+  };
+  const draw = time => {
+    if (!active) return;
+    frame = requestAnimationFrame(draw);
+    if (time - lastDraw < 32) return;
+    lastDraw = time;
+    context.clearRect(0, 0, 180, 180);
+    const motion = time * .001;
+    const moved = points.map(point => ({
+      x: point.x + Math.sin(motion * .8 + point.phase) * .16,
+      y: point.y + Math.cos(motion * .6 + point.phase) * .16,
+      bright: point.bright,
+    }));
+    context.lineWidth = .25;
+    context.strokeStyle = 'rgba(225,179,74,.52)';
+    context.beginPath();
+    for (const [a, b] of links) {
+      context.moveTo(moved[a].x, moved[a].y);
+      context.lineTo(moved[b].x, moved[b].y);
+    }
+    context.stroke();
+    for (const point of moved) {
+      context.fillStyle = point.bright ? 'rgba(255,245,201,.9)' : 'rgba(235,195,90,.55)';
+      context.beginPath(); context.arc(point.x, point.y, point.bright ? .55 : .18, 0, Math.PI * 2); context.fill();
+    }
+  };
+  resize(); window.addEventListener('resize', resize);
+  const ready = () => { if (!active) return; prepare(); frame = requestAnimationFrame(draw); };
+  if (source.complete && source.naturalWidth) ready(); else source.addEventListener('load', ready, { once: true });
+  return () => { active = false; cancelAnimationFrame(frame); window.removeEventListener('resize', resize); source.removeEventListener('load', ready); };
+}
+
 function background(formMode) {
   stopStars();
+  stopFigure();
   app.className = '';
   app.innerHTML = `<section class="login ${formMode ? 'is-form' : ''}">
     <canvas class="login-stars" aria-hidden="true"></canvas>
-    <img class="muse-figure" src="/assets/muse_lineart.png" alt="" aria-hidden="true">
+    <img class="muse-figure-source" src="/assets/muse_lineart.png" alt="" aria-hidden="true">
+    <canvas class="muse-figure" aria-hidden="true"></canvas>
     <img class="muse-entry-logo" src="/assets/muse-blanco.png" alt="MUSE">
     <div id="login-content"></div>
     <footer class="muse-footer"><span>MUSE V.2.5 // CORE ENGINE</span><strong>DESARROLLADO POR FLOWSLABS © 2026</strong></footer>
   </section>`;
-  stopStars = stars(app.querySelector('canvas'));
+  stopStars = stars(app.querySelector('.login-stars'), formMode);
+  stopFigure = formMode ? () => {} : weave(app.querySelector('.muse-figure'), app.querySelector('.muse-figure-source'));
   return document.getElementById('login-content');
 }
 
@@ -105,7 +188,7 @@ function form(step = 'email', message = '') {
 }
 
 function dashboard(email) {
-  stopStars(); app.className = '';
+  stopStars(); stopFigure(); app.className = '';
   app.innerHTML = `<div class="shell"><header class="top"><div class="brand"><img src="/assets/muse-blanco.png" alt="MUSE"><span class="brand-divider"></span><strong>HERO</strong></div><div class="top-user"><span>${escapeHtml(email)}</span><button id="logout" class="signout">Cerrar sesión</button></div></header><div class="layout"><aside><img class="hero-logo" src="/assets/hero.png" alt="HERO"><div class="aside-title">NAVEGACIÓN</div><button class="nav">Dashboard HERO<small>Radar de mercado y motocicletas</small></button><div class="scope">MUSE · Social Media Intelligence<br>Entorno exclusivo de HERO</div></aside><main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe title="Dashboard HERO Motos" src="/api/hero" loading="eager"></iframe></div></main></div></div>`;
   document.getElementById('logout').addEventListener('click', async () => { await api('logout', 'POST').catch(() => {}); currentEmail = ''; intro(); });
 }
