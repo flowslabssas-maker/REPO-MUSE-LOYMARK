@@ -60,7 +60,11 @@ function weave(canvas, source) {
   const sample = document.createElement('canvas');
   sample.width = sample.height = 180;
   const sampleContext = sample.getContext('2d', { willReadFrequently: true });
+  const art = document.createElement('canvas');
+  art.width = art.height = 512;
+  const artContext = art.getContext('2d', { willReadFrequently: true });
   let points = [], links = [], frame = 0, active = true, lastDraw = 0;
+  let pointer = { x: -100, y: -100 }, parallax = { x: 0, y: 0 };
   const resize = () => {
     const ratio = Math.min(devicePixelRatio || 1, 2);
     canvas.width = Math.round(canvas.clientWidth * ratio);
@@ -68,6 +72,16 @@ function weave(canvas, source) {
     context.setTransform(canvas.width / 180, 0, 0, canvas.height / 180, 0, 0);
   };
   const prepare = () => {
+    artContext.drawImage(source, 0, 0, 512, 512);
+    const artPixels = artContext.getImageData(0, 0, 512, 512);
+    for (let i = 0; i < artPixels.data.length; i += 4) {
+      const light = artPixels.data[i];
+      artPixels.data[i] = 245;
+      artPixels.data[i + 1] = 206;
+      artPixels.data[i + 2] = 124;
+      artPixels.data[i + 3] = light > 25 ? Math.min(255, light * .7) : 0;
+    }
+    artContext.putImageData(artPixels, 0, 0);
     sampleContext.drawImage(source, 0, 0, 180, 180);
     const pixels = sampleContext.getImageData(0, 0, 180, 180).data;
     points = [];
@@ -105,28 +119,61 @@ function weave(canvas, source) {
     lastDraw = time;
     context.clearRect(0, 0, 180, 180);
     const motion = time * .001;
+    const sweep = (time * .022 % 220) - 20;
+    const rect = canvas.getBoundingClientRect();
+    const targetX = pointer.x >= 0 ? (pointer.x / rect.width - .5) * 1.2 : 0;
+    const targetY = pointer.y >= 0 ? (pointer.y / rect.height - .5) * 1.2 : 0;
+    parallax.x += (targetX - parallax.x) * .04;
+    parallax.y += (targetY - parallax.y) * .04;
+    context.save();
+    context.translate(parallax.x, parallax.y + Math.sin(motion * .65) * .4);
+    context.globalAlpha = .72;
+    context.drawImage(art, 0, 0, 180, 180);
+    context.globalAlpha = 1;
     const moved = points.map(point => ({
-      x: point.x + Math.sin(motion * .45 + point.phase) * .1,
-      y: point.y + Math.cos(motion * .4 + point.phase) * .1,
+      x: point.x + Math.sin(motion * .72 + point.phase) * .23,
+      y: point.y + Math.cos(motion * .64 + point.phase) * .23,
       bright: point.bright,
     }));
-    context.lineWidth = .17;
-    context.strokeStyle = 'rgba(222,190,120,.38)';
+    context.lineWidth = .2;
+    context.strokeStyle = 'rgba(240,199,106,.53)';
     context.beginPath();
     for (const [a, b] of links) {
       context.moveTo(moved[a].x, moved[a].y);
       context.lineTo(moved[b].x, moved[b].y);
     }
     context.stroke();
-    for (const point of moved) {
-      context.fillStyle = point.bright ? 'rgba(255,245,213,.72)' : 'rgba(226,194,124,.4)';
-      context.beginPath(); context.arc(point.x, point.y, point.bright ? .42 : .14, 0, Math.PI * 2); context.fill();
+    context.lineWidth = .34;
+    context.strokeStyle = 'rgba(255,228,158,.7)';
+    context.shadowBlur = 3;
+    context.shadowColor = '#f5c76d';
+    context.beginPath();
+    for (const [a, b] of links) {
+      const middle = (moved[a].y + moved[b].y) / 2;
+      if (Math.abs(middle - sweep) > 7) continue;
+      context.moveTo(moved[a].x, moved[a].y);
+      context.lineTo(moved[b].x, moved[b].y);
     }
+    context.stroke();
+    context.shadowBlur = 0;
+    for (const point of moved) {
+      const illuminated = Math.abs(point.y - sweep) < 7;
+      context.fillStyle = point.bright || illuminated ? 'rgba(255,242,204,.85)' : 'rgba(239,202,126,.55)';
+      context.beginPath(); context.arc(point.x, point.y, point.bright || illuminated ? .42 : .17, 0, Math.PI * 2); context.fill();
+    }
+    context.restore();
   };
   resize(); window.addEventListener('resize', resize);
+  const onPointerMove = event => {
+    const rect = canvas.getBoundingClientRect();
+    pointer = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  };
+  const onPointerLeave = () => { pointer = { x: -100, y: -100 }; };
+  window.addEventListener('pointermove', onPointerMove);
+  window.addEventListener('pointerleave', onPointerLeave);
   const ready = () => { if (!active) return; prepare(); frame = requestAnimationFrame(draw); };
   if (source.complete && source.naturalWidth) ready(); else source.addEventListener('load', ready, { once: true });
-  return () => { active = false; cancelAnimationFrame(frame); window.removeEventListener('resize', resize); source.removeEventListener('load', ready); };
+  return () => { active = false; cancelAnimationFrame(frame); window.removeEventListener('resize', resize); window.removeEventListener('pointermove', onPointerMove); window.removeEventListener('pointerleave', onPointerLeave); source.removeEventListener('load', ready); };
 }
 
 function background(formMode) {
@@ -135,6 +182,7 @@ function background(formMode) {
   app.className = '';
   app.innerHTML = `<section class="login ${formMode ? 'is-form' : ''}">
     <canvas class="login-stars" aria-hidden="true"></canvas>
+    <div class="muse-aura" aria-hidden="true"></div>
     <img class="muse-figure-source" src="/assets/muse_lineart.png" alt="" aria-hidden="true">
     <canvas class="muse-figure" aria-hidden="true"></canvas>
     <img class="muse-entry-logo" src="/assets/muse-blanco.png" alt="MUSE">
