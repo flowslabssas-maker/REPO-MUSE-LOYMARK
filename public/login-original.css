@@ -1,5 +1,8 @@
 .login{display:block;position:relative;min-height:100dvh;overflow:hidden;background:#000;color:#fff;padding:0;font-family:Inter,system-ui,sans-serif}
 .login:before,.login:after{content:none;display:none}
+.space-haze{position:absolute;z-index:0;inset:-12%;pointer-events:none;background:radial-gradient(ellipse at 22% 60%,#29426925 0,transparent 37%),radial-gradient(ellipse at 77% 35%,#805a1d1c 0,transparent 34%);filter:blur(30px);opacity:.62;animation:space-haze-drift 30s ease-in-out infinite alternate}
+.login.is-form .space-haze{opacity:.12}
+@keyframes space-haze-drift{from{transform:translate3d(-2%,1%,0) scale(1)}to{transform:translate3d(2%,-2%,0) scale(1.06)}}
 .login-stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;transition:opacity .6s}
 .login.is-form .login-stars{opacity:.035}
 .muse-aura{position:absolute;z-index:1;left:50%;top:17%;width:min(82vh,78vw);height:min(82vh,78vw);transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,#a36b171c 0%,#8e5c0c0d 32%,transparent 68%);filter:blur(25px);pointer-events:none;animation:aura-breathe 8s ease-in-out infinite alternate}
@@ -12,7 +15,7 @@
 @keyframes aura-breathe{from{opacity:.52;transform:translateX(-50%) scale(.97)}to{opacity:1;transform:translateX(-50%) scale(1.05)}}
 .muse-entry-logo{position:absolute;z-index:3;left:50%;top:3.5%;transform:translateX(-50%);width:205px;height:auto;max-height:72px;object-fit:contain;filter:drop-shadow(0 0 15px #ffffff55)}
 .login.is-form .muse-entry-logo{top:1.5%;width:150px;max-height:46px}
-.enter-button{position:absolute;z-index:3;left:50%;top:75%;transform:translateX(-50%);width:194px;padding:15px 30px;border-radius:50px;border:1px solid #ffffff44;background:linear-gradient(#ffffff22,#ffffff0e);box-shadow:0 0 25px #ffffff24,inset 0 0 15px #ffffff12;color:#fff;font-size:15px;font-weight:800;letter-spacing:.27em;text-transform:uppercase;backdrop-filter:blur(10px);transition:transform .2s,box-shadow .2s}
+.enter-button{position:absolute;z-index:3;left:50%;top:81%;transform:translateX(-50%);width:194px;padding:15px 30px;border-radius:50px;border:1px solid #ffffff44;background:linear-gradient(#ffffff22,#ffffff0e);box-shadow:0 0 25px #ffffff24,inset 0 0 15px #ffffff12;color:#fff;font-size:15px;font-weight:800;letter-spacing:.27em;text-transform:uppercase;backdrop-filter:blur(10px);transition:transform .2s,box-shadow .2s}
 .enter-button:hover{transform:translateX(-50%) scale(1.05);box-shadow:0 0 35px #ffffff55}
 .muse-footer{position:absolute;z-index:3;left:0;right:0;bottom:18px;text-align:center;text-transform:uppercase;font-family:ui-monospace,monospace}
 .muse-footer span{display:block;color:#535760;font-size:8px;letter-spacing:.42em;margin-bottom:5px}
@@ -31,4 +34,4 @@
 .login-card .message{min-height:0;margin-top:10px;font-size:11px;color:#fca5a5;text-align:center}
 .login-card .message:empty{display:none}
 .email-hint{text-align:center;color:#a1a1aa;font-size:12px;line-height:1.5;margin:0 0 15px}.email-hint b{display:block;color:#eee;font-family:ui-monospace,monospace;font-size:12px;font-weight:500;margin-top:4px}
-@media(max-width:700px){.muse-entry-logo{width:160px;top:4%}.muse-figure{height:min(80vw,58vh);width:min(80vw,58vh);top:22%}.enter-button{top:76%}.login-card{top:100px}.muse-footer{bottom:14px}.muse-footer span{font-size:7px}}
+@media(max-width:700px){.muse-entry-logo{width:160px;top:4%}.muse-figure{height:min(80vw,58vh);width:min(80vw,58vh);top:22%}.enter-button{top:82%}.login-card{top:100px}.muse-footer{bottom:14px}.muse-footer span{font-size:7px}}

@@ -6,6 +6,7 @@ let stopFigure = () => {};
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[char]));
+const normalizeEmail = value => String(value || '').normalize('NFKC').replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
 
 async function api(action, method = 'GET', body) {
   const response = await fetch(`/api/auth?action=${action}`, {
@@ -27,6 +28,7 @@ function stars(canvas, formMode = false) {
     y: Math.random() > .28 ? .5 + (Math.random() + Math.random() + Math.random() - 1.5) * .43 : Math.random(),
     radius: Math.random() > .988 ? 1.6 + Math.random() * 2 : .2 + Math.random() * .9,
     gold: Math.random() > .52, phase: Math.random() * 6.3, speed: .3 + Math.random() * 1.2,
+    depth: .35 + Math.random() * 1.15,
   }));
   let width = 0, height = 0, frame = 0, active = true;
   const resize = () => {
@@ -40,12 +42,12 @@ function stars(canvas, formMode = false) {
     if (!active) return;
     context.clearRect(0, 0, width, height);
     for (const star of particles) {
-      const alpha = .09 + .44 * (.5 + .5 * Math.sin(time * .0007 * star.speed + star.phase));
+      const alpha = (.09 + .44 * (.5 + .5 * Math.sin(time * .0007 * star.speed + star.phase))) * (.65 + star.depth * .25);
       context.fillStyle = star.gold ? `rgba(230,192,102,${alpha})` : `rgba(245,246,249,${alpha})`;
       if (star.radius > 1.6) { context.shadowBlur = 7; context.shadowColor = star.gold ? '#d7ab55' : '#fff'; }
       else context.shadowBlur = 0;
-      const x = ((star.x + time * .00000045 * star.speed) % 1 + 1) % 1;
-      const y = star.y + Math.sin(time * .00018 * star.speed + star.phase) * .005;
+      const x = ((star.x + time * .0000015 * star.depth) % 1 + 1) % 1;
+      const y = ((star.y - time * .00000045 * star.depth + Math.sin(time * .00018 * star.speed + star.phase) * .004) % 1 + 1) % 1;
       context.beginPath(); context.arc(x * width, y * height, star.radius, 0, Math.PI * 2); context.fill();
     }
     frame = requestAnimationFrame(draw);
@@ -181,6 +183,7 @@ function background(formMode) {
   stopFigure();
   app.className = '';
   app.innerHTML = `<section class="login ${formMode ? 'is-form' : ''}">
+    <div class="space-haze" aria-hidden="true"></div>
     <canvas class="login-stars" aria-hidden="true"></canvas>
     <div class="muse-aura" aria-hidden="true"></div>
     <img class="muse-figure-source" src="/assets/muse_lineart.png" alt="" aria-hidden="true">
@@ -204,8 +207,8 @@ function form(step = 'email', message = '') {
   slot.innerHTML = `<div class="login-card">
     <div class="form-kicker">${step === 'email' ? 'IDENTIFICACIÓN REQUERIDA' : 'PROTOCOLO DE SEGURIDAD'}</div>
     ${step === 'code' ? `<div class="email-hint">Introduce el código enviado a:<b>${escapeHtml(currentEmail)}</b></div>` : ''}
-    <form id="login-form">
-      <input id="entry" ${step === 'email' ? 'type="email" autocomplete="email" placeholder="CORREO INSTITUCIONAL"' : 'class="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="0 0 0 0"'} required aria-label="${step === 'email' ? 'Correo institucional' : 'Código de acceso'}">
+    <form id="login-form" novalidate>
+      <input id="entry" ${step === 'email' ? 'type="text" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="CORREO INSTITUCIONAL"' : 'class="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="4" placeholder="0 0 0 0"'} required aria-label="${step === 'email' ? 'Correo institucional' : 'Código de acceso'}">
       <button class="primary" type="submit">${step === 'email' ? 'CONTINUAR' : 'VALIDAR ACCESO'}</button>
     </form>
     <div class="form-foot"><button class="secondary" id="back" type="button">${step === 'email' ? 'CANCELAR' : 'USAR OTRO CORREO'}</button></div>
@@ -213,6 +216,10 @@ function form(step = 'email', message = '') {
   </div>`;
   const input = document.getElementById('entry');
   const button = slot.querySelector('.primary');
+  if (step === 'email') input.addEventListener('input', () => {
+    const clean = normalizeEmail(input.value);
+    if (input.value !== clean) input.value = clean;
+  });
   input.focus();
   document.getElementById('back').addEventListener('click', () => step === 'email' ? intro() : form());
   document.getElementById('login-form').addEventListener('submit', async event => {
@@ -220,7 +227,8 @@ function form(step = 'email', message = '') {
     document.getElementById('message').textContent = 'VERIFICANDO...';
     try {
       if (step === 'email') {
-        currentEmail = input.value.trim().toLowerCase();
+        currentEmail = normalizeEmail(input.value);
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(currentEmail)) throw new Error('Revisa la dirección de correo.');
         const result = await api('enter', 'POST', { email: currentEmail });
         if (result.mode === 'direct') dashboard(currentEmail);
         else form('code', 'CÓDIGO ENVIADO A TU CORREO');
@@ -237,8 +245,64 @@ function form(step = 'email', message = '') {
 
 function dashboard(email) {
   stopStars(); stopFigure(); app.className = '';
-  app.innerHTML = `<div class="shell"><header class="top"><div class="brand"><img src="/assets/muse-blanco.png" alt="MUSE"><span class="brand-divider"></span><strong>HERO</strong></div><div class="top-user"><span>${escapeHtml(email)}</span><button id="logout" class="signout">Cerrar sesión</button></div></header><div class="layout"><aside><img class="hero-logo" src="/assets/hero.png" alt="HERO"><div class="aside-title">NAVEGACIÓN</div><button class="nav">Dashboard HERO<small>Radar de mercado y motocicletas</small></button><div class="scope">MUSE · Social Media Intelligence<br>Entorno exclusivo de HERO</div></aside><main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe title="Dashboard HERO Motos" src="/api/hero" loading="eager"></iframe></div></main></div></div>`;
-  document.getElementById('logout').addEventListener('click', async () => { await api('logout', 'POST').catch(() => {}); currentEmail = ''; intro(); });
+  const getPreference = key => { try { return localStorage.getItem(key); } catch { return null; } };
+  const savePreference = (key, value) => { try { localStorage.setItem(key, value); } catch {} };
+  const initialTheme = getPreference('museHeroTheme') === 'dark' ? 'dark' : 'light';
+  app.innerHTML = `<div class="shell" data-theme="${initialTheme}">
+    <header class="top">
+      <div class="top-left">
+        <button id="sidebar-toggle" class="icon-button" type="button" aria-label="Ocultar barra lateral" aria-expanded="true" title="Ocultar barra lateral"><span></span><span></span><span></span></button>
+        <div class="brand"><img src="/assets/muse-blanco.png" alt="MUSE"><span class="brand-divider"></span><strong>HERO</strong></div>
+      </div>
+      <div class="top-user">
+        <button id="theme-toggle" class="theme-toggle" type="button"><span class="theme-icon" aria-hidden="true">${initialTheme === 'dark' ? '☀' : '☾'}</span><span class="theme-label">${initialTheme === 'dark' ? 'Modo claro' : 'Modo oscuro'}</span></button>
+        <span class="user-email">${escapeHtml(email)}</span><button id="logout" class="signout">Cerrar sesión</button>
+      </div>
+    </header>
+    <div class="layout">
+      <aside class="sidebar"><div class="client-badge"><img class="hero-logo" src="/assets/hero.png" alt="HERO"></div><div class="aside-title">NAVEGACIÓN</div><button class="nav" type="button">Dashboard HERO<small>Radar de mercado y motocicletas</small></button><div class="scope">MUSE · Social Media Intelligence<br>Entorno exclusivo de HERO</div></aside>
+      <main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe id="hero-frame" title="Dashboard HERO Motos" src="/api/hero?theme=${initialTheme}" loading="eager"></iframe></div></main>
+    </div>
+  </div>`;
+  const shell = app.querySelector('.shell');
+  const sidebarToggle = document.getElementById('sidebar-toggle');
+  const themeToggle = document.getElementById('theme-toggle');
+  const frame = document.getElementById('hero-frame');
+  const setSidebarCollapsed = collapsed => {
+    shell.classList.toggle('sidebar-collapsed', collapsed);
+    sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+    sidebarToggle.setAttribute('aria-label', collapsed ? 'Mostrar barra lateral' : 'Ocultar barra lateral');
+    sidebarToggle.title = collapsed ? 'Mostrar barra lateral' : 'Ocultar barra lateral';
+    savePreference('museHeroSidebar', collapsed ? 'closed' : 'open');
+  };
+  setSidebarCollapsed(getPreference('museHeroSidebar') === 'closed' || (getPreference('museHeroSidebar') === null && window.innerWidth < 800));
+  sidebarToggle.addEventListener('click', () => setSidebarCollapsed(!shell.classList.contains('sidebar-collapsed')));
+  const applyTheme = theme => {
+    shell.dataset.theme = theme;
+    themeToggle.querySelector('.theme-icon').textContent = theme === 'dark' ? '☀' : '☾';
+    themeToggle.querySelector('.theme-label').textContent = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+    themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+    frame.contentWindow?.postMessage({ type: 'muse-theme', theme }, location.origin);
+    savePreference('museHeroTheme', theme);
+  };
+  themeToggle.addEventListener('click', () => applyTheme(shell.dataset.theme === 'dark' ? 'light' : 'dark'));
+  let frameObserver;
+  const resizeFrame = () => {
+    const height = frame.contentDocument?.body?.scrollHeight;
+    if (!height) return;
+    const target = Math.min(20000, Math.max(720, height + 4));
+    if (Math.abs(target - frame.clientHeight) > 16) frame.style.height = `${target}px`;
+  };
+  frame.addEventListener('load', () => {
+    applyTheme(shell.dataset.theme);
+    resizeFrame();
+    frameObserver?.disconnect();
+    if (frame.contentDocument?.body && 'ResizeObserver' in window) {
+      frameObserver = new ResizeObserver(() => requestAnimationFrame(resizeFrame));
+      frameObserver.observe(frame.contentDocument.body);
+    }
+  });
+  document.getElementById('logout').addEventListener('click', async () => { frameObserver?.disconnect(); await api('logout', 'POST').catch(() => {}); currentEmail = ''; intro(); });
 }
 
 api('me').then(({ email }) => dashboard(email)).catch(() => intro());

@@ -17,7 +17,7 @@ export default async function handler(request, response) {
     return response.status(200).json({ ok: true });
   }
 
-  const email = String(request.body?.email || '').trim().toLowerCase();
+  const email = String(request.body?.email || '').normalize('NFKC').replace(/[\s\u200B-\u200D\uFEFF]/g, '').toLowerCase();
   if (!allowed(email)) return response.status(403).json({ error: 'Correo no autorizado para HERO.' });
   try {
     if (action === 'enter' && directAllowed(email)) {
