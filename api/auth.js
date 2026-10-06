@@ -1,4 +1,4 @@
-import { allowed, clearCookie, createSession, museOtp, readSession, secretReady, sessionCookie } from './_auth.js';
+import { allowed, clearCookie, createSession, directAllowed, museOtp, readSession, secretReady, sessionCookie } from './_auth.js';
 
 export default async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store');
@@ -20,10 +20,14 @@ export default async function handler(request, response) {
   const email = String(request.body?.email || '').trim().toLowerCase();
   if (!allowed(email)) return response.status(403).json({ error: 'Correo no autorizado para HERO.' });
   try {
-    if (action === 'send') {
+    if (action === 'enter' && directAllowed(email)) {
+      response.setHeader('Set-Cookie', sessionCookie(createSession(email)));
+      return response.status(200).json({ ok: true, mode: 'direct', email });
+    }
+    if (action === 'send' || action === 'enter') {
       const result = await museOtp('send', { email, name: email.split('@')[0], department: 'CLIENT', area: 'HERO', archetype: 'Hermes' });
       return result.result === 'success'
-        ? response.status(200).json({ ok: true })
+        ? response.status(200).json({ ok: true, mode: 'code' })
         : response.status(502).json({ error: 'No se pudo enviar el código.' });
     }
     if (action === 'verify') {

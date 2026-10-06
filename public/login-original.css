@@ -1,0 +1,30 @@
+.login{display:block;position:relative;min-height:100dvh;overflow:hidden;background:#000;color:#fff;padding:0;font-family:Inter,system-ui,sans-serif}
+.login:before,.login:after{content:none;display:none}
+.login-stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;transition:opacity .6s}
+.login.is-form .login-stars{opacity:.035}
+.muse-figure{position:absolute;z-index:1;left:50%;top:18%;height:62%;max-width:70vw;width:auto;object-fit:contain;transform:translateX(-50%);mix-blend-mode:screen;filter:sepia(1) saturate(2.2) hue-rotate(352deg) brightness(.7);opacity:.78;pointer-events:none;animation:muse-shimmer 6s ease-in-out infinite alternate}
+.login.is-form .muse-figure{animation:none;opacity:.015}
+.login.is-form #login-content{position:relative;z-index:3;width:100%}
+@keyframes muse-shimmer{from{opacity:.56}to{opacity:.8}}
+.muse-entry-logo{position:absolute;z-index:3;left:50%;top:3.5%;transform:translateX(-50%);width:205px;height:auto;max-height:72px;object-fit:contain;filter:drop-shadow(0 0 15px #ffffff55)}
+.login.is-form .muse-entry-logo{top:1.5%;width:150px;max-height:46px}
+.enter-button{position:absolute;z-index:3;left:50%;top:75%;transform:translateX(-50%);width:194px;padding:15px 30px;border-radius:50px;border:1px solid #ffffff44;background:linear-gradient(#ffffff22,#ffffff0e);box-shadow:0 0 25px #ffffff24,inset 0 0 15px #ffffff12;color:#fff;font-size:15px;font-weight:800;letter-spacing:.27em;text-transform:uppercase;backdrop-filter:blur(10px);transition:transform .2s,box-shadow .2s}
+.enter-button:hover{transform:translateX(-50%) scale(1.05);box-shadow:0 0 35px #ffffff55}
+.muse-footer{position:absolute;z-index:3;left:0;right:0;bottom:18px;text-align:center;text-transform:uppercase;font-family:ui-monospace,monospace}
+.muse-footer span{display:block;color:#535760;font-size:8px;letter-spacing:.42em;margin-bottom:5px}
+.muse-footer strong{display:block;color:#ff5500;text-shadow:0 0 12px #ff5500;font-size:9px;letter-spacing:.18em}
+.login-card{position:relative;z-index:3;top:120px;width:min(500px,calc(100vw - 28px));padding:25px 24px 22px;margin:0 auto;background:#000;border:1px solid #ffffff22;border-radius:17px;box-shadow:0 50px 100px -12px #000;backdrop-filter:blur(22px);overflow:hidden}
+.login-card:before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#ef4444,transparent);opacity:.8}
+.form-kicker{text-align:center;color:#666;font-size:10px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;margin:2px 0 18px}
+.login-card input{width:100%;height:46px;padding:11px 15px;background:#ffffff0d;border:1px solid #ffffff1a;border-radius:10px;color:#fff;text-align:center;font-size:14px;font-weight:600;letter-spacing:.03em;outline:none}
+.login-card input:focus{border-color:#ffffff66;box-shadow:0 0 0 2px #ffffff22}
+.login-card input::placeholder{color:#a7aebc;text-transform:uppercase;opacity:1}
+.login-card input.code{font-family:ui-monospace,monospace;font-size:26px;letter-spacing:.5em;background:#0a0a0a}
+.login-card .primary{display:block;width:100%;height:45px;margin:16px 0 0;border:0;border-radius:50px;background:#fff;box-shadow:none;color:#000;font-size:12px;font-weight:800;letter-spacing:.26em;text-transform:uppercase}
+.login-card .primary:hover{background:#ececec}
+.form-foot{text-align:center}.login-card .secondary{border:0;background:transparent;color:#7d8491;font-size:10px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;margin-top:13px}
+.login-card .secondary:hover{color:#fff}
+.login-card .message{min-height:0;margin-top:10px;font-size:11px;color:#fca5a5;text-align:center}
+.login-card .message:empty{display:none}
+.email-hint{text-align:center;color:#a1a1aa;font-size:12px;line-height:1.5;margin:0 0 15px}.email-hint b{display:block;color:#eee;font-family:ui-monospace,monospace;font-size:12px;font-weight:500;margin-top:4px}
+@media(max-width:700px){.muse-entry-logo{width:160px;top:4%}.muse-figure{height:52%;top:24%;max-width:100vw}.enter-button{top:76%}.login-card{top:100px}.muse-footer{bottom:14px}.muse-footer span{font-size:7px}}

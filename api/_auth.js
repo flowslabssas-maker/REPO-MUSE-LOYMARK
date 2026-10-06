@@ -5,9 +5,20 @@ const MAX_AGE = 8 * 60 * 60;
 const BACKEND = 'https://muse-l81e.onrender.com';
 
 export function allowed(email) {
+  if (directAllowed(email)) return true;
   const list = (process.env.HERO_ALLOWED_EMAILS || 'ivon.lopez@mergeto.co,maria.garcia@mergeto.co,diegodimon1902@gmail.com')
     .split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
   return list.includes(String(email || '').trim().toLowerCase());
+}
+
+export function directAllowed(email) {
+  const normalized = String(email || '').trim().toLowerCase();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalized)) return false;
+  const domains = (process.env.HERO_DIRECT_DOMAINS || 'hmclcolombia.com')
+    .split(',').map(value => value.trim().toLowerCase().replace(/^@/, '')).filter(Boolean);
+  const emails = (process.env.HERO_DIRECT_EMAILS || 'andres.rodriguez@hothatch.com.co,ivon.lopez@mergeto.co,maria.garcia@mergeto.co,santiago.valencia@loymark.com,jairo.fandino@loymark.com,natalia.maderog@ariadnacg.com')
+    .split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
+  return domains.includes(normalized.split('@')[1]) || emails.includes(normalized);
 }
 
 export function secretReady() {
