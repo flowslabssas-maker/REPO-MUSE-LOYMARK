@@ -3,10 +3,10 @@
 .login-stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;transition:opacity .6s}
 .login.is-form .login-stars{opacity:.035}
 .muse-figure-source{display:none}
-.muse-figure{position:absolute;z-index:1;left:50%;top:14%;height:min(72vh,72vw);width:min(72vh,72vw);transform:translateX(-50%);mix-blend-mode:screen;opacity:.88;pointer-events:none;animation:muse-shimmer 6s ease-in-out infinite alternate}
+.muse-figure{position:absolute;z-index:1;left:50%;top:14%;height:min(72vh,72vw);width:min(72vh,72vw);transform:translateX(-50%);mix-blend-mode:screen;opacity:.75;pointer-events:none;animation:muse-shimmer 9s ease-in-out infinite alternate}
 .login.is-form .muse-figure{animation:none;opacity:.015}
 .login.is-form #login-content{position:relative;z-index:3;width:100%}
-@keyframes muse-shimmer{from{opacity:.7}to{opacity:.96}}
+@keyframes muse-shimmer{from{opacity:.65}to{opacity:.82}}
 .muse-entry-logo{position:absolute;z-index:3;left:50%;top:3.5%;transform:translateX(-50%);width:205px;height:auto;max-height:72px;object-fit:contain;filter:drop-shadow(0 0 15px #ffffff55)}
 .login.is-form .muse-entry-logo{top:1.5%;width:150px;max-height:46px}
 .enter-button{position:absolute;z-index:3;left:50%;top:75%;transform:translateX(-50%);width:194px;padding:15px 30px;border-radius:50px;border:1px solid #ffffff44;background:linear-gradient(#ffffff22,#ffffff0e);box-shadow:0 0 25px #ffffff24,inset 0 0 15px #ffffff12;color:#fff;font-size:15px;font-weight:800;letter-spacing:.27em;text-transform:uppercase;backdrop-filter:blur(10px);transition:transform .2s,box-shadow .2s}

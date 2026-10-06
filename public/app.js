@@ -22,10 +22,10 @@ async function api(action, method = 'GET', body) {
 
 function stars(canvas, formMode = false) {
   const context = canvas.getContext('2d');
-  const particles = Array.from({ length: formMode ? 700 : 5600 }, () => ({
+  const particles = Array.from({ length: formMode ? 500 : 4100 }, () => ({
     x: Math.random() > .28 ? .5 + (Math.random() + Math.random() + Math.random() - 1.5) * .31 : Math.random(),
     y: Math.random() > .28 ? .5 + (Math.random() + Math.random() + Math.random() - 1.5) * .43 : Math.random(),
-    radius: Math.random() > .975 ? 2 + Math.random() * 2.6 : .25 + Math.random() * 1.1,
+    radius: Math.random() > .988 ? 1.6 + Math.random() * 2 : .2 + Math.random() * .9,
     gold: Math.random() > .52, phase: Math.random() * 6.3, speed: .3 + Math.random() * 1.2,
   }));
   let width = 0, height = 0, frame = 0, active = true;
@@ -40,12 +40,12 @@ function stars(canvas, formMode = false) {
     if (!active) return;
     context.clearRect(0, 0, width, height);
     for (const star of particles) {
-      const alpha = .18 + .6 * (.5 + .5 * Math.sin(time * .001 * star.speed + star.phase));
-      context.fillStyle = star.gold ? `rgba(255,208,35,${alpha})` : `rgba(255,255,255,${alpha})`;
-      if (star.radius > 2) { context.shadowBlur = 9; context.shadowColor = star.gold ? '#f5bd11' : '#fff'; }
+      const alpha = .09 + .44 * (.5 + .5 * Math.sin(time * .0007 * star.speed + star.phase));
+      context.fillStyle = star.gold ? `rgba(230,192,102,${alpha})` : `rgba(245,246,249,${alpha})`;
+      if (star.radius > 1.6) { context.shadowBlur = 7; context.shadowColor = star.gold ? '#d7ab55' : '#fff'; }
       else context.shadowBlur = 0;
-      const x = ((star.x + time * .0000008 * star.speed) % 1 + 1) % 1;
-      const y = star.y + Math.sin(time * .00025 * star.speed + star.phase) * .008;
+      const x = ((star.x + time * .00000045 * star.speed) % 1 + 1) % 1;
+      const y = star.y + Math.sin(time * .00018 * star.speed + star.phase) * .005;
       context.beginPath(); context.arc(x * width, y * height, star.radius, 0, Math.PI * 2); context.fill();
     }
     frame = requestAnimationFrame(draw);
@@ -106,12 +106,12 @@ function weave(canvas, source) {
     context.clearRect(0, 0, 180, 180);
     const motion = time * .001;
     const moved = points.map(point => ({
-      x: point.x + Math.sin(motion * .8 + point.phase) * .16,
-      y: point.y + Math.cos(motion * .6 + point.phase) * .16,
+      x: point.x + Math.sin(motion * .45 + point.phase) * .1,
+      y: point.y + Math.cos(motion * .4 + point.phase) * .1,
       bright: point.bright,
     }));
-    context.lineWidth = .25;
-    context.strokeStyle = 'rgba(225,179,74,.52)';
+    context.lineWidth = .17;
+    context.strokeStyle = 'rgba(222,190,120,.38)';
     context.beginPath();
     for (const [a, b] of links) {
       context.moveTo(moved[a].x, moved[a].y);
@@ -119,8 +119,8 @@ function weave(canvas, source) {
     }
     context.stroke();
     for (const point of moved) {
-      context.fillStyle = point.bright ? 'rgba(255,245,201,.9)' : 'rgba(235,195,90,.55)';
-      context.beginPath(); context.arc(point.x, point.y, point.bright ? .55 : .18, 0, Math.PI * 2); context.fill();
+      context.fillStyle = point.bright ? 'rgba(255,245,213,.72)' : 'rgba(226,194,124,.4)';
+      context.beginPath(); context.arc(point.x, point.y, point.bright ? .42 : .14, 0, Math.PI * 2); context.fill();
     }
   };
   resize(); window.addEventListener('resize', resize);

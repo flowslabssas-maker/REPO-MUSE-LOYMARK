@@ -22,11 +22,15 @@ export function directAllowed(email) {
 }
 
 export function secretReady() {
-  return typeof process.env.MUSE_SESSION_SECRET === 'string' && process.env.MUSE_SESSION_SECRET.length >= 32;
+  return typeof sessionSecret() === 'string' && sessionSecret().length >= 32;
+}
+
+function sessionSecret() {
+  return process.env.MUSE_SESSION_SECRET || process.env.muse_session_secret;
 }
 
 function sign(value) {
-  return createHmac('sha256', process.env.MUSE_SESSION_SECRET).update(value).digest('base64url');
+  return createHmac('sha256', sessionSecret()).update(value).digest('base64url');
 }
 
 export function createSession(email) {
