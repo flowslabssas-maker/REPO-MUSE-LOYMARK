@@ -38,9 +38,9 @@ function sign(value) {
   return createHmac('sha256', sessionSecret()).update(value).digest('base64url');
 }
 
-export function createSession(email) {
+export function createSession(email, mode) {
   if (!secretReady()) throw new Error('MUSE_SESSION_SECRET is not configured');
-  const payload = Buffer.from(JSON.stringify({ email, exp: Date.now() + MAX_AGE * 1000 })).toString('base64url');
+  const payload = Buffer.from(JSON.stringify({ email, mode, exp: Date.now() + MAX_AGE * 1000 })).toString('base64url');
   return `${payload}.${sign(payload)}`;
 }
 

@@ -21,7 +21,7 @@ export default async function handler(request, response) {
   if (!allowed(email)) return response.status(403).json({ error: 'Correo no autorizado para HERO.' });
   try {
     if (action === 'enter' && directAllowed(email)) {
-      response.setHeader('Set-Cookie', sessionCookie(createSession(email)));
+      response.setHeader('Set-Cookie', sessionCookie(createSession(email, 'direct')));
       return response.status(200).json({ ok: true, mode: 'direct', email });
     }
     if (action === 'send' || action === 'enter') {
@@ -35,7 +35,7 @@ export default async function handler(request, response) {
       if (!/^\d{4,8}$/.test(code)) return response.status(400).json({ error: 'Código inválido.' });
       const result = await museOtp('verify', { email, code });
       if (result.result !== 'success') return response.status(401).json({ error: 'Código incorrecto o vencido.' });
-      response.setHeader('Set-Cookie', sessionCookie(createSession(email)));
+      response.setHeader('Set-Cookie', sessionCookie(createSession(email, 'otp')));
       return response.status(200).json({ ok: true, email });
     }
     return response.status(404).json({ error: 'Acción desconocida.' });
