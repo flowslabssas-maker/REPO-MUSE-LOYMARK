@@ -1,3 +1,4 @@
+import { recordHeroLogin } from './_audit.js';
 import { allowed, clearCookie, createSession, directAllowed, museOtp, normalizeEmail, readSession, secretReady, sessionCookie } from './_auth.js';
 
 export default async function handler(request, response) {
@@ -21,7 +22,11 @@ export default async function handler(request, response) {
   if (!allowed(email)) return response.status(403).json({ error: 'Correo no autorizado para HERO.' });
   try {
     if (action === 'enter' && directAllowed(email)) {
-      response.setHeader('Set-Cookie', sessionCookie(createSession(email, 'direct')));
+      const cookie = sessionCookie(createSession(email, 'direct'));
+      response.setHeader('Set-Cookie', cookie);
+      const session = readSession({ headers: { cookie } });
+      const stored = await recordHeroLogin(request, session);
+      response.setHeader('X-Hero-Audit-Status', stored ? 'recorded' : 'unavailable');
       return response.status(200).json({ ok: true, mode: 'direct', email });
     }
     if (action === 'send' || action === 'enter') {
@@ -35,7 +40,11 @@ export default async function handler(request, response) {
       if (!/^\d{4,8}$/.test(code)) return response.status(400).json({ error: 'Código inválido.' });
       const result = await museOtp('verify', { email, code });
       if (result.result !== 'success') return response.status(401).json({ error: 'Código incorrecto o vencido.' });
-      response.setHeader('Set-Cookie', sessionCookie(createSession(email, 'otp')));
+      const cookie = sessionCookie(createSession(email, 'otp'));
+      response.setHeader('Set-Cookie', cookie);
+      const session = readSession({ headers: { cookie } });
+      const stored = await recordHeroLogin(request, session);
+      response.setHeader('X-Hero-Audit-Status', stored ? 'recorded' : 'unavailable');
       return response.status(200).json({ ok: true, email });
     }
     return response.status(404).json({ error: 'Acción desconocida.' });

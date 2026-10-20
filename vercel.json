@@ -3,15 +3,26 @@
   "framework": null,
   "outputDirectory": "public",
   "functions": {
-    "api/auth.js": { "maxDuration": 60 },
-    "api/hero.js": { "includeFiles": "private/hero-motos.html" }
+    "api/auth.js": {
+      "maxDuration": 60
+    },
+    "api/hero.js": {
+      "includeFiles": "private/hero-motos.html",
+      "maxDuration": 15
+    }
   },
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
     }
   ]

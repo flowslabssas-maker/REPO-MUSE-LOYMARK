@@ -2,6 +2,8 @@ const app = document.getElementById('app');
 let currentEmail = '';
 let stopStars = () => {};
 let stopFigure = () => {};
+// Anonymous funnel events: never send an email, code or session token to analytics.
+function trackHero(name) { try { window.va?.('event', { name }); } catch {} }
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -199,7 +201,7 @@ function background(formMode) {
 
 function intro() {
   background(false).innerHTML = '<button class="enter-button" type="button">INGRESAR</button>';
-  app.querySelector('.enter-button').addEventListener('click', () => form());
+  app.querySelector('.enter-button').addEventListener('click', () => { trackHero('hero_enter_click'); form(); });
 }
 
 function form(step = 'email', message = '') {
@@ -229,11 +231,14 @@ function form(step = 'email', message = '') {
       if (step === 'email') {
         currentEmail = normalizeEmail(input.value);
         if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(currentEmail)) throw new Error('Revisa la dirección de correo.');
+        trackHero('hero_login_attempt');
         const result = await api('enter', 'POST', { email: currentEmail });
-        if (result.mode === 'direct') dashboard(currentEmail);
+        if (result.mode === 'direct') { trackHero('hero_login_success'); dashboard(currentEmail); }
         else form('code', 'CÓDIGO ENVIADO A TU CORREO');
       } else {
+        trackHero('hero_code_attempt');
         await api('verify', 'POST', { email: currentEmail, code: input.value.trim() });
+        trackHero('hero_login_success');
         dashboard(currentEmail);
       }
     } catch (error) {
