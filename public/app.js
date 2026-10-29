@@ -265,7 +265,7 @@ function dashboard(email) {
       </div>
     </header>
     <div class="layout">
-      <aside class="sidebar"><div class="client-badge"><img class="hero-logo" src="/assets/hero.png" alt="HERO"></div><div class="aside-title">NAVEGACIÓN</div><button class="nav" type="button">Dashboard HERO<small>Radar de mercado y motocicletas</small></button><div class="scope">MUSE · Social Media Intelligence<br>Entorno exclusivo de HERO</div></aside>
+      <aside class="sidebar"><div class="client-badge"><img class="hero-logo" src="/assets/hero.png" alt="HERO"></div><div class="aside-title">NAVEGACIÓN</div><button class="nav" data-dashboard="hero" type="button">Dashboard HERO<small>Radar de mercado y motocicletas</small></button><button class="nav" data-dashboard="xiaomi" type="button">Dashboard Xiaomi<small>Social Listening</small></button><div class="scope">MUSE · Social Media Intelligence</div></aside>
       <main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe id="hero-frame" title="Dashboard HERO Motos" src="/api/hero?theme=${initialTheme}" loading="eager"></iframe></div></main>
     </div>
   </div>`;
@@ -273,6 +273,19 @@ function dashboard(email) {
   const sidebarToggle = document.getElementById('sidebar-toggle');
   const themeToggle = document.getElementById('theme-toggle');
   const frame = document.getElementById('hero-frame');
+  const selectDashboard = name => {
+    const xiaomi = name === 'xiaomi';
+    frame.src = xiaomi ? '/api/xiaomi' : '/api/hero?theme=' + shell.dataset.theme;
+    frame.title = xiaomi ? 'Social Listening Xiaomi' : 'Dashboard HERO Motos';
+    app.querySelector('.page-head h1').textContent = xiaomi ? 'Dashboard Estratégico · Xiaomi' : 'Dashboard Estratégico · HERO';
+    app.querySelector('.page-head p').textContent = xiaomi ? 'Social Listening · Conversación y análisis de marca.' : 'Mercado, marcas, vehículos y conversación en un solo lugar.';
+    app.querySelector('.brand strong').textContent = xiaomi ? 'XIAOMI' : 'HERO';
+    app.querySelector('.client-badge').innerHTML = xiaomi ? '<strong style="color:#ff6900;font-size:28px">Xiaomi</strong>' : '<img class="hero-logo" src="/assets/hero.png" alt="HERO">';
+    app.querySelectorAll('[data-dashboard]').forEach(button => button.setAttribute('aria-current', button.dataset.dashboard === name ? 'page' : 'false'));
+  };
+  app.querySelectorAll('[data-dashboard]').forEach(button => button.addEventListener('click', () => selectDashboard(button.dataset.dashboard)));
+  app.querySelector('[data-dashboard="hero"]').setAttribute('aria-current', 'page');
+
   const setSidebarCollapsed = collapsed => {
     shell.classList.toggle('sidebar-collapsed', collapsed);
     sidebarToggle.setAttribute('aria-expanded', String(!collapsed));

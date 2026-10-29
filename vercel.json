@@ -9,6 +9,10 @@
     "api/hero.js": {
       "includeFiles": "private/hero-motos.html",
       "maxDuration": 15
+    },
+    "api/xiaomi.js": {
+      "includeFiles": "private/xiaomi*{,/**}",
+      "maxDuration": 15
     }
   },
   "headers": [

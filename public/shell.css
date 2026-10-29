@@ -26,3 +26,5 @@
 .shell iframe{display:block;background:var(--shell-card);border-color:var(--shell-line);box-shadow:0 12px 35px #1118270d;min-height:720px;height:calc(100dvh - 180px)}
 .shell[data-theme="dark"] iframe{box-shadow:0 12px 38px #0005}
 @media(max-width:800px){.shell .top{padding-inline:12px;gap:8px}.top-left{gap:7px}.shell .brand{gap:8px}.shell .brand img{width:76px}.shell .layout{display:grid;grid-template-columns:minmax(0,1fr)}.shell .sidebar{padding:12px;display:flex;flex-direction:column;gap:10px}.shell.sidebar-collapsed .sidebar{display:none}.client-badge{min-height:76px}.shell .sidebar .hero-logo{width:124px}.shell .sidebar .aside-title,.shell .sidebar .scope{display:none}.shell .sidebar .nav{width:100%}.theme-label{display:none}.theme-toggle{width:36px;padding:0;justify-content:center}.shell .frame-wrap{padding:8px}.shell .page-head{padding:18px}}
+
+.shell .sidebar .nav[aria-current="false"]{background:transparent;color:#cbd5e1;margin-top:8px}
