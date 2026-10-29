@@ -2,12 +2,21 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import handler from '../api/xiaomi.js';
-import { createSession } from '../api/_auth.js';
+import { createSession, clientsForEmail, allowed } from '../api/_auth.js';
 process.env.MUSE_SESSION_SECRET='test-only-xiaomi-secret-with-more-than-32-characters';
 process.env.HERO_DIRECT_EMAILS='qa@example.test';
 process.env.HERO_ALLOWED_EMAILS='diegodimon1902@gmail.com';
 const response=()=>({headers:{},setHeader(k,v){this.headers[k]=v},status(n){this.code=n;return this},send(v){this.body=v;return this}});
 const request=(query={},auth=true)=>({method:'GET',query,headers:{cookie:auth?'muse_hero_session='+createSession('diegodimon1902@gmail.com','otp'):''}});
+test('explicitly approved users can access both clients without opening access to their domains',async()=>{
+  for(const email of ['daniela.hernandez@loymark.com','jairo.fandino@loymark.com','santiago.valencia@loymark.com','andres.rojas@ariadnacg.com']) {
+    assert(allowed(email));assert.deepEqual(clientsForEmail(email.toUpperCase()),['hero','xiaomi']);
+    const req=request();req.headers.cookie='muse_hero_session='+createSession(email,'otp');const r=response();await handler(req,r);assert.equal(r.code,200);
+  }
+  assert.deepEqual(clientsForEmail('qa@example.test'),['hero']);
+  assert.deepEqual(clientsForEmail('unapproved@loymark.com'),[]);
+  assert.deepEqual(clientsForEmail('unapproved@ariadnacg.com'),[]);
+});
 test('HERO users cannot fetch Xiaomi HTML or images with a valid existing session',async()=>{
   for(const query of [{},{asset:'a'.repeat(64)+'.png'}]) { const req=request(query);req.headers.cookie='muse_hero_session='+createSession('qa@example.test','direct'); const r=response();await handler(req,r);assert.equal(r.code,403);assert(!String(r.body).includes('Social Listening')); }
 });
