@@ -34,6 +34,10 @@
     {
       "source": "/xiaomi",
       "destination": "/index.html"
+    },
+    {
+      "source": "/hero",
+      "destination": "/index.html"
     }
   ]
 }

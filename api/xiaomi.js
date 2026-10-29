@@ -1,13 +1,15 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { readSession, secretReady } from './_auth.js';
+import { readSession, secretReady, canAccessClient } from './_auth.js';
 
 export default async function handler(request, response) {
   response.setHeader('Cache-Control', 'private, no-store, max-age=0');
   response.setHeader('X-Content-Type-Options', 'nosniff');
   if (request.method !== 'GET') return response.status(405).send('Método no permitido');
   if (!secretReady()) return response.status(503).send('MUSE no está configurado');
-  if (!readSession(request)) return response.status(401).send('Inicia sesión para ver Xiaomi');
+  const session = readSession(request);
+  if (!session) return response.status(401).send('Inicia sesión para ver Xiaomi');
+  if (!canAccessClient(session, 'xiaomi')) return response.status(403).send('No tienes acceso a Xiaomi');
   const asset = request.query?.asset;
   if (asset !== undefined && (typeof asset !== 'string' || !/^[a-f0-9]{64}\.(png|jpg|webp|gif|svg)$/.test(asset))) return response.status(400).send('Imagen inválida');
   try {

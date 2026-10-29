@@ -1,5 +1,5 @@
 import { recordHeroLogin } from './_audit.js';
-import { allowed, clearCookie, createSession, directAllowed, museOtp, normalizeEmail, readSession, secretReady, sessionCookie } from './_auth.js';
+import { allowed, clearCookie, clientsForEmail, createSession, directAllowed, museOtp, normalizeEmail, readSession, secretReady, sessionCookie } from './_auth.js';
 
 export default async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store');
@@ -8,7 +8,7 @@ export default async function handler(request, response) {
   const action = new URL(request.url, `https://${request.headers.host || 'localhost'}`).searchParams.get('action');
   if (request.method === 'GET' && action === 'me') {
     const session = readSession(request);
-    return session ? response.status(200).json({ email: session.email }) : response.status(401).json({ error: 'Sesión no iniciada.' });
+    return session ? response.status(200).json({ email: session.email, clients: clientsForEmail(session.email) }) : response.status(401).json({ error: 'Sesión no iniciada.' });
   }
   if (request.method !== 'POST') return response.status(405).json({ error: 'Método no permitido.' });
   const origin = request.headers.origin;

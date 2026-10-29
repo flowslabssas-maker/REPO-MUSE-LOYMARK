@@ -5,8 +5,12 @@ import handler from '../api/xiaomi.js';
 import { createSession } from '../api/_auth.js';
 process.env.MUSE_SESSION_SECRET='test-only-xiaomi-secret-with-more-than-32-characters';
 process.env.HERO_DIRECT_EMAILS='qa@example.test';
+process.env.HERO_ALLOWED_EMAILS='diegodimon1902@gmail.com';
 const response=()=>({headers:{},setHeader(k,v){this.headers[k]=v},status(n){this.code=n;return this},send(v){this.body=v;return this}});
-const request=(query={},auth=true)=>({method:'GET',query,headers:{cookie:auth?'muse_hero_session='+createSession('qa@example.test','direct'):''}});
+const request=(query={},auth=true)=>({method:'GET',query,headers:{cookie:auth?'muse_hero_session='+createSession('diegodimon1902@gmail.com','otp'):''}});
+test('HERO users cannot fetch Xiaomi HTML or images with a valid existing session',async()=>{
+  for(const query of [{},{asset:'a'.repeat(64)+'.png'}]) { const req=request(query);req.headers.cookie='muse_hero_session='+createSession('qa@example.test','direct'); const r=response();await handler(req,r);assert.equal(r.code,403);assert(!String(r.body).includes('Social Listening')); }
+});
 test('Xiaomi HTML and images require an existing valid session',async()=>{
   for(const query of [{},{asset:'a'.repeat(64)+'.png'}]){const r=response();await handler(request(query,false),r);assert.equal(r.code,401)}
 });

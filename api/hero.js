@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { readSession, secretReady } from './_auth.js';
+import { readSession, secretReady, canAccessClient } from './_auth.js';
 import { recordHeroOpen } from './_audit.js';
 
 export default async function handler(request, response) {
@@ -9,6 +9,7 @@ export default async function handler(request, response) {
   if (!secretReady()) return response.status(503).send('MUSE no está configurado');
   const session = readSession(request);
   if (!session) return response.status(401).send('Inicia sesión para ver HERO');
+  if (!canAccessClient(session, 'hero')) return response.status(403).send('No tienes acceso a HERO');
   try {
     const html = await readFile(join(process.cwd(), 'private', 'hero-motos.html'), 'utf8');
     const theme = request.query?.theme === 'dark' ? 'dark' : 'light';

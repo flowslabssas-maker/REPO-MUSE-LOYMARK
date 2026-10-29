@@ -16,6 +16,17 @@ export function allowed(email) {
   return list.includes(normalized);
 }
 
+// Evaluated on every request, including sessions created before client isolation.
+export function clientsForEmail(email) {
+  const normalized = normalizeEmail(email);
+  if (!allowed(normalized)) return [];
+  return normalized === 'diegodimon1902@gmail.com' ? ['hero', 'xiaomi'] : ['hero'];
+}
+
+export function canAccessClient(session, client) {
+  return !!session && clientsForEmail(session.email).includes(client);
+}
+
 export function directAllowed(email) {
   const normalized = normalizeEmail(email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalized)) return false;
