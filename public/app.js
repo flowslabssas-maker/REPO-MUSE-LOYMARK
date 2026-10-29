@@ -249,6 +249,7 @@ function form(step = 'email', message = '') {
 }
 
 function dashboard(email, clients) {
+  document.title = 'MUSE Loymark';
   const xiaomiEnvironment = location.pathname === '/xiaomi';
   stopStars(); stopFigure(); app.className = '';
   const getPreference = key => { try { return localStorage.getItem(key); } catch { return null; } };
@@ -281,7 +282,7 @@ function dashboard(email, clients) {
   const selectDashboard = name => {
     const xiaomi = name === 'xiaomi';
     shell.dataset.client = xiaomi ? 'xiaomi' : 'hero';
-    document.title = xiaomi ? 'Xiaomi · MUSE' : 'HERO · MUSE';
+    document.title = xiaomi ? 'Xiaomi · MUSE Loymark' : 'HERO · MUSE Loymark';
     frame.src = xiaomi ? '/api/xiaomi' : '/api/hero?theme=' + shell.dataset.theme;
     frame.title = xiaomi ? 'Social Listening Xiaomi' : 'Dashboard HERO Motos';
     app.querySelector('.page-head h1').textContent = xiaomi ? 'Dashboard Estratégico · Xiaomi' : 'Dashboard Estratégico · HERO';
@@ -344,7 +345,7 @@ async function openPortal() {
   const requested = location.pathname === '/xiaomi' ? 'xiaomi' : location.pathname === '/hero' ? 'hero' : null;
   if (requested && clients.includes(requested)) return dashboard(session.email, clients);
   stopStars(); stopFigure(); app.className = '';
-  document.title = 'Clientes · MUSE';
+  document.title = 'Clientes · MUSE Loymark';
   const catalog = { hero: {name:'HERO',image:'/assets/hero.png',description:'Radar de mercado y motocicletas'}, xiaomi: {name:'Xiaomi',image:'/assets/xiaomi.ico',description:'Social Listening y audiencias'} };
   app.innerHTML = '<div class="client-portal"><header><img src="/assets/muse-blanco.png" alt="MUSE"><span>'+escapeHtml(session.email)+'</span><button id="portal-logout">Cerrar sesión</button></header><main><p class="portal-eyebrow">MUSE · CLIENTES</p><h1>Elige tu cliente</h1><p>Estos son los entornos disponibles para tu cuenta.</p>' + (requested ? '<p role="status">Tu cuenta no tiene acceso al entorno solicitado.</p>' : '') + '<div class="client-grid">' + clients.map(id => '<a class="client-card '+id+'" href="/'+id+'"><img src="'+catalog[id].image+'" alt="'+catalog[id].name+'"><h2>'+catalog[id].name+'</h2><p>'+catalog[id].description+'</p><span>Abrir dashboard →</span></a>').join('') + '</div></main></div>';
   document.getElementById('portal-logout').onclick = async () => { await api('logout','POST'); location.href='/'; };
