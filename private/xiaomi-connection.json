@@ -1,0 +1,932 @@
+{
+  "dashboard": "Muse · Social Listening Xiaomi Colombia (licitación XMI-CO-RFP-SM-2027-001)",
+  "archivo": "Muse_SocialListening_Xiaomi.html (una sola página; datos incrustados al generar)",
+  "actualizado": "2026-10-29",
+  "bases": {
+    "Base Xiaomi": {
+      "spreadsheet_id": "1hINz639BW0akzuCOEUW77z-1XQm1vYiiqhu3P2Yb6QU",
+      "url": "https://docs.google.com/spreadsheets/d/1hINz639BW0akzuCOEUW77z-1XQm1vYiiqhu3P2Yb6QU/edit",
+      "fuente": "Pulsar (consultas Xiaomi, Redmi, POCO, Xiaomi Stores), Colombia",
+      "pestanas": {
+        "Menciones": {
+          "gid": "0",
+          "clave": "AD ID Mención",
+          "columnas": "A Consulta · C Fecha · D Hora · E Día de la semana · F Fuente (red) · G Autor · H Contenido · M Sentimiento · Z Interacciones · AD ID Mención · AE Grupo · AF Submarca · AG Línea · AH Modelo · AI Gama · AJ Año lanzamiento · AK Fase lanzamiento · AL Atributo principal · AM Atributos secundarios · AN Intención · AO Marca comparada · AP Migración desde · AQ Migración hacia · AR Canal mencionado · AS Evento comercial · AT Propio / Ganado · AU Tipo de autor · AV Tipo de alcance · AW Relevante · AX Sentimiento validado · BA Categoría de producto · BC Única total · BD Única en grupo · BE Origen sentimiento · BF Audiencia",
+          "descripcion": "Una fila por mención. AW Relevante = fórmula: \"No\" si el ID está en Depuración."
+        },
+        "Depuración": {
+          "gid": "1213468325",
+          "clave": "ID Mención",
+          "descripcion": "Menciones excluidas por no hablar de la marca, con el motivo."
+        },
+        "Catálogo": {
+          "gid": "1"
+        },
+        "Cuentas oficiales": {
+          "gid": "2"
+        },
+        "Calendario comercial": {
+          "gid": "3"
+        },
+        "Parámetros": {
+          "gid": "4"
+        },
+        "Diccionario": {
+          "gid": "5"
+        },
+        "Validación sentimiento": {
+          "gid": "991673333"
+        }
+      }
+    },
+    "Base Competencia": {
+      "spreadsheet_id": "1WbYSgZp1x0VI-oHYe4f0_cKg7leLEjMXsEYkF3qksu4",
+      "url": "https://docs.google.com/spreadsheets/d/1WbYSgZp1x0VI-oHYe4f0_cKg7leLEjMXsEYkF3qksu4/edit",
+      "fuente": "Pulsar (Samsung, Motorola, Oppo, Tecno, Infinix, itel, Honor, Huawei, Categoría celulares), Colombia",
+      "pestanas": {
+        "Menciones": {
+          "gid": "0",
+          "clave": "AD ID Mención",
+          "columnas": "A Consulta · C Fecha · D Hora · E Día de la semana · F Fuente (red) · G Autor · H Contenido · M Sentimiento · Z Interacciones · AD ID Mención · AE Grupo · AF Submarca · AG Línea · AH Modelo · AI Gama · AJ Año lanzamiento · AK Fase lanzamiento · AL Atributo principal · AM Atributos secundarios · AN Intención · AO Marca comparada · AP Migración desde · AQ Migración hacia · AR Canal mencionado · AS Evento comercial · AT Propio / Ganado · AU Tipo de autor · AV Tipo de alcance · AW Relevante · AX Sentimiento validado · BA Categoría de producto · BC Única total · BD Única en grupo · BE Origen sentimiento · BF Audiencia"
+        },
+        "Depuración": {
+          "gid": "1663394320",
+          "clave": "ID Mención"
+        },
+        "Catálogo": {
+          "gid": "1"
+        },
+        "Cuentas oficiales": {
+          "gid": "2"
+        },
+        "Calendario comercial": {
+          "gid": "3"
+        },
+        "Parámetros": {
+          "gid": "4"
+        },
+        "Diccionario": {
+          "gid": "5"
+        }
+      }
+    },
+    "Base Redes (Fan Page Karma)": {
+      "spreadsheet_id": "1loJ8hzvktwHXATNFmOxJ4jFS8BVJv9jtJH_E2C6kSe0",
+      "url": "https://docs.google.com/spreadsheets/d/1loJ8hzvktwHXATNFmOxJ4jFS8BVJv9jtJH_E2C6kSe0/edit",
+      "fuente": "Fan Page Karma, cuentas oficiales de Colombia, ene 2020 – sep 2026. El tablero excluye a Xiaomi (sus filas se conservan en la base).",
+      "pestanas": {
+        "Publicaciones": {
+          "gid": "1883719830",
+          "clave": "A ID publicación",
+          "columnas": "A ID publicación · B Fecha (Colombia) · C Marca · D Cuenta · E Red · F Perfil · G ID perfil · H Tipo · I Tema · J Formato · K Texto · L Me gusta · M Comentarios · N Interacciones · O Tasa de interacción · P Interacción por impresión · Q Comentarios negativos (%) · R Enlace · S Enlaces externos · T Imagen original · U Imagen vence · V Imagen en Drive · W Estado imagen"
+        },
+        "Perfiles": {
+          "gid": "1234639213",
+          "clave": "E ID perfil",
+          "columnas": "A Marca · B Cuenta · C Red · D Perfil · E ID perfil · F Enlace de la cuenta · G Ficha FPK · H Seguidores estimados (sep 2026) · I Nota"
+        },
+        "Diario": {
+          "gid": "104662688",
+          "clave": "A Fecha + E ID perfil",
+          "columnas": "A Fecha · B Marca · C Cuenta · D Red · E ID perfil · F Publicaciones · G Crecimiento del día · H Crecimiento acumulado"
+        }
+      }
+    },
+    "Base Marca Xiaomi (Anexo A)": {
+      "spreadsheet_id": "1Pugk2KKpfZKyM3dZszcQZAdC5-LC8Qw-897y5_nckXE",
+      "url": "https://docs.google.com/spreadsheets/d/1Pugk2KKpfZKyM3dZszcQZAdC5-LC8Qw-897y5_nckXE/edit",
+      "fuente": "Xiaomi Colombia · Anexo A (Breve Status Social Media + Details of the data), recibido 15 oct 2026",
+      "pestanas": {
+        "Redes_mes": {
+          "gid": "0",
+          "clave": "A Plataforma + B Mes + D Métrica",
+          "columnas": "A Plataforma · B Mes · C Ventana de la captura · D Métrica · E Tipo (Total/Orgánico/Pauta) · F Valor · G Var. vs periodo anterior · H Cifra redondeada · I Fuente"
+        },
+        "Tienda_trafico": {
+          "gid": "1",
+          "clave": "A Mes",
+          "columnas": "A Mes · B Transeúntes · C Tráfico (entradas) · D Visitantes únicos · E Personal detectado · F Tasa de entrada (reportada) · G Tasa de entrada (calculada, fórmula D/B) · H Estado (Completo/Parcial/Sin medición) · I Fuente"
+        },
+        "Plantilla_carga": {
+          "gid": "2",
+          "columnas": "A–I igual que Redes_mes · J Cargado a Redes_mes (lo escribe el script)"
+        },
+        "Control": {
+          "gid": "3",
+          "descripcion": "B3 última revisión y B4 estado (script); B5:B10 fórmulas de control."
+        }
+      }
+    },
+    "TGI Colombia": {
+      "spreadsheet_id": null,
+      "fuente": "TGI Colombia 2026 R2 · Personas de 12 años o más (Kantar IBOPE Media), consultado en TGI Choices Online. Total 6.874 casos (22,2 M); usuarios Xiaomi 1.062 (3,6 M). Columnas = marca del celular principal: Honor, Huawei, Motorola, Oppo, Samsung, Xiaomi (Transsion no aparece). No es una hoja de cálculo: se extrae a mano en cada ola de TGI y queda incrustado en el HTML.",
+      "pestanas": {},
+      "archivo_intermedio": "aud_final.json → clave tgi (incrustado en el HTML como D.audx.tgi)"
+    }
+  },
+  "actualizacion": {
+    "zona_horaria": "America/Bogota",
+    "pasos": [
+      {
+        "base": "Base Redes (Fan Page Karma)",
+        "proyecto_apps_script": "Rescate de imágenes · Base Redes Xiaomi (1Y_S0m01Gp_bIY537SpazpoYrpvgrhlvIIkKwUtGVKMjKoKoGh8OCT2yR)",
+        "funcion": "rescatarImagenes (cada 10 min hasta terminar) · generarMiniaturas · partirMiniaturas",
+        "que_hace": "Guarda en Drive las imágenes de las publicaciones (V:W) y genera las miniaturas que se incrustan en el HTML."
+      },
+      {
+        "base": "Base Marca Xiaomi (Anexo A)",
+        "proyecto_apps_script": "Revisión diaria · Base Marca Xiaomi (1Xp1fZD6TCwf7b0uHmGpwYU3GwFLq08wjtEIvDA7WHlSF0wKIRQnNU3TP)",
+        "funcion": "revisionDiaria (6:00) = cargarPlantilla + revisarBase",
+        "que_hace": "Pasa a Redes_mes las filas nuevas de Plantilla_carga y escribe en Control si falta el mes anterior. No descarga datos: Xiaomi los entrega."
+      },
+      {
+        "base": "Tablero",
+        "funcion": "build_html.py",
+        "que_hace": "El HTML lleva los datos incrustados: para ver datos nuevos se regenera el archivo y se reemplaza en Muse."
+      },
+      {
+        "base": "TGI Colombia",
+        "proyecto_apps_script": null,
+        "funcion": "Manual, por ola de TGI (no diaria)",
+        "que_hace": "Repetir la consulta en TGI Choices Online con las mismas filas y columnas, actualizar tgi.json y regenerar el HTML."
+      }
+    ]
+  },
+  "capitulos": [
+    {
+      "capitulo": "Filtros generales",
+      "elementos": [
+        {
+          "elemento": "Comparar Xiaomi con (competidores)",
+          "tipo": "filtro",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AE Grupo",
+          "calculo": "Marcas incluidas en todos los módulos. En Redes de la competencia y Contenidos solo lista competidores; en Xiaomi · marca no aplica."
+        },
+        {
+          "elemento": "Año",
+          "tipo": "filtro",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia",
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "0",
+            "1883719830"
+          ],
+          "columnas": "C Fecha · B Fecha (Colombia)",
+          "calculo": "Año de la mención o publicación."
+        },
+        {
+          "elemento": "Red",
+          "tipo": "filtro",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia",
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "0",
+            "1883719830"
+          ],
+          "columnas": "F Fuente · E Red",
+          "calculo": "X, Instagram, Facebook, TikTok y Medios (Online News; no aplica en redes)."
+        },
+        {
+          "elemento": "Alcance: Solo celulares / Todo",
+          "tipo": "filtro",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AV Tipo de alcance",
+          "calculo": "Solo celulares = menciones que nombran un modelo o hablan de teléfonos."
+        },
+        {
+          "elemento": "Relevancia",
+          "tipo": "regla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0",
+            "1213468325",
+            "1663394320"
+          ],
+          "columnas": "AW Relevante · Depuración",
+          "calculo": "Siempre se excluyen las filas con Relevante = \"No\"."
+        },
+        {
+          "elemento": "Mención única",
+          "tipo": "regla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "BD Única en grupo",
+          "calculo": "Una mención cuenta una vez por marca aunque aparezca en varias consultas."
+        }
+      ]
+    },
+    {
+      "capitulo": "Panorama",
+      "elementos": [
+        {
+          "elemento": "KPIs de resumen y hallazgos",
+          "tipo": "KPI",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AE, M/AX, Z, G",
+          "calculo": "Menciones, participación de voz (Xiaomi ÷ marcas seleccionadas), sentimiento neto ((pos−neg)÷total), interacciones, autores únicos."
+        },
+        {
+          "elemento": "Comparar marcas",
+          "tipo": "tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AE, M, Z",
+          "calculo": "Por marca."
+        },
+        {
+          "elemento": "Submarcas de Xiaomi",
+          "tipo": "barras + línea",
+          "base": [
+            "Base Xiaomi"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AF Submarca, C Fecha",
+          "calculo": "Xiaomi, Redmi, POCO, Xiaomi Stores."
+        },
+        {
+          "elemento": "Evolución",
+          "tipo": "líneas",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "C Fecha (mes), AE",
+          "calculo": "Menciones o sentimiento por mes."
+        }
+      ]
+    },
+    {
+      "capitulo": "Mercado",
+      "elementos": [
+        {
+          "elemento": "Conversación, búsqueda y mercado",
+          "tipo": "líneas + tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AE + Google Trends y StatCounter (incrustados en el HTML)",
+          "calculo": "Participación en conversación vs búsqueda vs mercado."
+        },
+        {
+          "elemento": "Temporadas",
+          "tipo": "tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AS Evento comercial, C Fecha",
+          "calculo": "Menciones en días de evento vs línea base."
+        },
+        {
+          "elemento": "Lanzamientos",
+          "tipo": "líneas",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AH Modelo, AK Fase lanzamiento",
+          "calculo": "Conversación alrededor de cada lanzamiento."
+        },
+        {
+          "elemento": "Canales",
+          "tipo": "barras",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AR Canal mencionado",
+          "calculo": "Tiendas y canales citados."
+        }
+      ]
+    },
+    {
+      "capitulo": "Producto",
+      "elementos": [
+        {
+          "elemento": "Gamas",
+          "tipo": "barras",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AI Gama",
+          "calculo": "Precio de lista al 14-oct-2026."
+        },
+        {
+          "elemento": "Modelos",
+          "tipo": "tabla + líneas",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AH Modelo, AI Gama",
+          "calculo": "Modelos con 25 menciones o más."
+        },
+        {
+          "elemento": "Atributos",
+          "tipo": "heatmap",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AL Atributo principal, AM Atributos secundarios, AN Intención",
+          "calculo": "Reparto y sentimiento por atributo."
+        },
+        {
+          "elemento": "Ecosistema",
+          "tipo": "barras",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "BA Categoría de producto",
+          "calculo": "Celulares, wearables, hogar, etc."
+        },
+        {
+          "elemento": "Software",
+          "tipo": "barras",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AL / AM (HyperOS, MIUI, actualizaciones)",
+          "calculo": "Menciones de software."
+        }
+      ]
+    },
+    {
+      "capitulo": "Competencia",
+      "elementos": [
+        {
+          "elemento": "Cara a cara",
+          "tipo": "tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AO Marca comparada",
+          "calculo": "Menciones que comparan Xiaomi con otra marca."
+        },
+        {
+          "elemento": "Migración",
+          "tipo": "flujos",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AP Migración desde, AQ Migración hacia",
+          "calculo": "Quién dice que se cambia de qué marca a cuál."
+        }
+      ]
+    },
+    {
+      "capitulo": "Personas",
+      "elementos": [
+        {
+          "elemento": "Preguntas y posventa",
+          "tipo": "barras",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AN Intención, AL Atributo",
+          "calculo": "Pregunta/Recomendación y Queja/Soporte."
+        },
+        {
+          "elemento": "Audiencias",
+          "tipo": "barras",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "BF Audiencia, AU Tipo de autor, R Ciudad",
+          "calculo": "Perfil de quien habla."
+        },
+        {
+          "elemento": "Cuándo se habla",
+          "tipo": "heatmap",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "E Día de la semana, D Hora",
+          "calculo": "Menciones por día y hora."
+        },
+        {
+          "elemento": "Hashtags",
+          "tipo": "nube/tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "H Contenido (hashtags extraídos)",
+          "calculo": "Top 40 por marca."
+        }
+      ]
+    },
+    {
+      "capitulo": "Audiencias",
+      "base_comun": "Menciones relevantes (AW ≠ No) y únicas en grupo (BD = Sí) de X, Instagram, Facebook y TikTok (F), oct 2025 – sep 2026 (B), solo celulares (AH Modelo o palabras de celular en H), tipo de autor Usuario o Influenciador (AU). Se excluyen avisos de venta, contacto o servicio técnico y las cuentas con 2 o más de esos avisos (8.516 menciones, 1.004 cuentas). Quedan 16.150 menciones de 8.111 personas.",
+      "elementos": [
+        {
+          "elemento": "Portada",
+          "tipo": "texto + cifras",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia",
+            "TGI"
+          ],
+          "gid": [
+            "0",
+            "—"
+          ],
+          "columnas": "AE Grupo, AL Atributo principal, S Género · TGI: marca del celular principal, estrato, redes, actividades",
+          "calculo": "Usuarios Xiaomi (TGI), estrato 2, TikTok, X y grabar video; % hombres en la conversación y peso de Cámara en las menciones de Xiaomi frente a la categoría."
+        },
+        {
+          "elemento": "Audience cards (3 pestañas)",
+          "tipo": "tarjetas",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "BF Audiencia, AN Intención, AL Atributo principal, AU Tipo de autor, S Género, R Ciudad, F Fuente, AX Sentimiento validado, B Fecha y Hora, AE Grupo, G Autor",
+          "calculo": "Perfiles: techies y gamers (BF = Tech/Gaming); cazadores de precio (AL = Precio-valor o Financiación/Trade-in); por comprar (BF = Comprador nuevo o AN = Intención de compra). Peso = autores del perfil ÷ 8.111. Afinidad = % en el perfil ÷ % en toda la base × 100. Índice Xiaomi = peso de Xiaomi (AE) en el perfil ÷ su peso en la base × 100."
+        },
+        {
+          "elemento": "Indicadores del segmento",
+          "tipo": "KPI",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia",
+            "TGI"
+          ],
+          "gid": [
+            "0",
+            "—"
+          ],
+          "columnas": "G Autor · TGI base Xiaomi",
+          "calculo": "6 perfiles, 8.111 personas, 3,6 M usuarios Xiaomi (TGI), 1.004 cuentas comerciales excluidas."
+        },
+        {
+          "elemento": "El usuario Xiaomi: género, edad, estrato, frente a la tecnología",
+          "tipo": "barras 100% y barras",
+          "base": [
+            "TGI Colombia 2026 R2",
+            "Pulsar (género)"
+          ],
+          "gid": [
+            "—",
+            "0"
+          ],
+          "columnas": "TGI: Hombres/Mujeres, rangos de edad, estrato, frases de actitud · S Género",
+          "calculo": "% vertical de usuarios Xiaomi frente al total de la población y afinidad. Género en redes: solo menciones con S Género (2.936)."
+        },
+        {
+          "elemento": "Perfiles en la conversación (6)",
+          "tipo": "tarjetas",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "Las mismas de las audience cards + H Contenido (citas)",
+          "calculo": "Además de los 3 perfiles: piden ayuda (AN = Queja/Soporte), creadores (AU = Influenciador), cuentan su experiencia (AN = Experiencia de uso). Una persona puede estar en varios. Citas leídas una a una, sin usuarios ni hashtags."
+        },
+        {
+          "elemento": "Perfiles × marcas",
+          "tipo": "tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AE Grupo (Tecno, Infinix e itel = Transsion)",
+          "calculo": "Índice de cada marca en cada perfil; verde ≥ 110, rojo ≤ 90."
+        },
+        {
+          "elemento": "Redes que usa · Qué hace en redes · Passion points",
+          "tipo": "barras",
+          "base": [
+            "TGI Colombia 2026 R2"
+          ],
+          "gid": [
+            "—"
+          ],
+          "columnas": "Accedió a la red en los últimos 30 días; actividades en redes y con la cámara; actividades que le gusta hacer",
+          "calculo": "% de usuarios Xiaomi, línea del total y afinidad. Passion points: solo actividades que hace al menos el 5%."
+        },
+        {
+          "elemento": "Dónde se habla de celulares",
+          "tipo": "barras",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "F Fuente, AE Grupo",
+          "calculo": "% de las menciones de Xiaomi por red frente a toda la base."
+        },
+        {
+          "elemento": "Afinidad por marca en redes",
+          "tipo": "tabla",
+          "base": [
+            "TGI Colombia 2026 R2"
+          ],
+          "gid": [
+            "—"
+          ],
+          "columnas": "Marca del celular principal × redes y actividades",
+          "calculo": "Afinidad de los usuarios de cada marca (100 = total población)."
+        },
+        {
+          "elemento": "Zoom digital · Voces reales · Metodología",
+          "tipo": "tarjetas y texto",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia",
+            "TGI"
+          ],
+          "gid": [
+            "0",
+            "—"
+          ],
+          "columnas": "Las anteriores + H Contenido",
+          "calculo": "Resumen de las cifras de arriba y citas de Xiaomi."
+        }
+      ]
+    },
+    {
+      "capitulo": "Xiaomi · marca",
+      "elementos": [
+        {
+          "elemento": "Tarjetas por plataforma",
+          "tipo": "KPI",
+          "base": [
+            "Base Marca Xiaomi (Anexo A)"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "A, B, D ∈ {Vistas, Impresiones}, F",
+          "calculo": "Agosto vs febrero; X de agosto suma jul–ago y no se compara."
+        },
+        {
+          "elemento": "De dónde vienen las vistas",
+          "tipo": "barra 100%",
+          "base": [
+            "Base Marca Xiaomi (Anexo A)"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "A, B, D (Vistas / Impresiones), F",
+          "calculo": "Reparto entre redes por mes; total a la derecha."
+        },
+        {
+          "elemento": "Orgánico y pauta",
+          "tipo": "barra 100% + tabla",
+          "base": [
+            "Base Marca Xiaomi (Anexo A)"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "A ∈ {Facebook, Instagram}, D ∈ {Vistas, Vistas orgánicas, Vistas por pauta}, E, F, G",
+          "calculo": "% por pauta = Vistas por pauta ÷ Vistas."
+        },
+        {
+          "elemento": "Detalle por plataforma",
+          "tipo": "tabla",
+          "base": [
+            "Base Marca Xiaomi (Anexo A)"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "A, B, C, D, F, G, H",
+          "calculo": "Todas las métricas; ≈ cuando H = Sí."
+        },
+        {
+          "elemento": "TikTok · fuentes de tráfico",
+          "tipo": "barras",
+          "base": [
+            "Base Marca Xiaomi (Anexo A)"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "D \"Fuente de tráfico: …\", F",
+          "calculo": "Febrero 2026."
+        },
+        {
+          "elemento": "Tráfico en tienda",
+          "tipo": "KPI + líneas + tabla",
+          "base": [
+            "Base Marca Xiaomi (Anexo A)"
+          ],
+          "gid": [
+            "1"
+          ],
+          "columnas": "A, B, C, D, E, G, H",
+          "calculo": "Promedios de meses Completos; tasa de entrada = D ÷ B; octubre parcial."
+        }
+      ]
+    },
+    {
+      "capitulo": "Redes de la competencia",
+      "elementos": [
+        {
+          "elemento": "Ficha por marca",
+          "tipo": "tabla",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1883719830",
+            "1234639213",
+            "104662688"
+          ],
+          "columnas": "Publicaciones C, B, E, H, J, N, O · Perfiles H · Diario G",
+          "calculo": "Seguidores (Perfiles H), crecimiento neto (suma Diario G), publicaciones/semana, interacciones por publicación (N ÷ n), tasa mediana (O), % video (J), respuestas en X (H = Respuesta). Sin Xiaomi."
+        },
+        {
+          "elemento": "Piezas destacadas de la competencia",
+          "tipo": "tarjetas con imagen",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1883719830"
+          ],
+          "columnas": "A, B, C, D, E, I, J, K, N, R, V",
+          "calculo": "Top 8 por N Interacciones; imagen = miniatura incrustada de V Imagen en Drive."
+        },
+        {
+          "elemento": "Actividad",
+          "tipo": "líneas + barra 100%",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1883719830"
+          ],
+          "columnas": "B (mes), C, E, H",
+          "calculo": "Publicaciones por mes (sin respuestas)."
+        },
+        {
+          "elemento": "Comunidad",
+          "tipo": "barras + líneas",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1234639213",
+            "104662688"
+          ],
+          "columnas": "Perfiles H · Diario A, B, D, G",
+          "calculo": "Instagram, TikTok y X."
+        },
+        {
+          "elemento": "Interacción",
+          "tipo": "heatmap + barras",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1883719830"
+          ],
+          "columnas": "C, E, N, O",
+          "calculo": "Interacciones por publicación y tasa mediana (sin Facebook)."
+        }
+      ]
+    },
+    {
+      "capitulo": "Contenidos",
+      "elementos": [
+        {
+          "elemento": "Mejores publicaciones",
+          "tipo": "tarjetas con imagen",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1883719830"
+          ],
+          "columnas": "A, B, C, E, I, J, K, N, O, R, V",
+          "calculo": "Top 12; selector de marca."
+        },
+        {
+          "elemento": "Qué funciona",
+          "tipo": "heatmap + tabla",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1883719830"
+          ],
+          "columnas": "C, I Tema, J Formato, N",
+          "calculo": "Reparto e interacciones por tema y formato."
+        },
+        {
+          "elemento": "Cuándo publicar",
+          "tipo": "heatmap",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1883719830"
+          ],
+          "columnas": "B (día y hora Colombia), C, N",
+          "calculo": "Índice vs promedio de la marca; franjas con ≥5 publicaciones."
+        },
+        {
+          "elemento": "Atención en X",
+          "tipo": "líneas",
+          "base": [
+            "Base Redes (Fan Page Karma)"
+          ],
+          "gid": [
+            "1883719830"
+          ],
+          "columnas": "B, C, E = X, H = Respuesta",
+          "calculo": "Respuestas a usuarios por mes."
+        }
+      ]
+    },
+    {
+      "capitulo": "Scorecard 2027",
+      "elementos": [
+        {
+          "elemento": "Tabla de indicadores",
+          "tipo": "tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia",
+            "Base Marca Xiaomi (Anexo A)"
+          ],
+          "gid": [
+            "0",
+            "1"
+          ],
+          "columnas": "B2/E2: Menciones AE, M, C · A1, B1, C1, C2: Redes_mes · D1: Tienda_trafico",
+          "calculo": "Líneas base: listening oct 2025 – sep 2026; Anexo A feb y ago 2026; tienda mar – sep 2026."
+        },
+        {
+          "elemento": "B2 Participación de voz",
+          "tipo": "líneas + tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "AE, C (12 meses)",
+          "calculo": "Meta = línea base + 2 puntos."
+        },
+        {
+          "elemento": "E2 Sentimiento neto",
+          "tipo": "líneas + tabla",
+          "base": [
+            "Base Xiaomi",
+            "Base Competencia"
+          ],
+          "gid": [
+            "0"
+          ],
+          "columnas": "M/AX, C",
+          "calculo": "Línea base = promedio de 12 meses."
+        },
+        {
+          "elemento": "Simulador",
+          "tipo": "controles",
+          "base": [],
+          "gid": [],
+          "columnas": "—",
+          "calculo": "Reglas del contrato; no lee bases."
+        }
+      ]
+    }
+  ],
+  "reglas": [
+    {
+      "tema": "Fuente de Xiaomi",
+      "regla": "Los datos propios de Xiaomi (redes y tienda) salen solo de la Base Marca (Anexo A). Fan Page Karma se usa solo para la competencia."
+    },
+    {
+      "tema": "Confidencialidad",
+      "regla": "El Anexo A trae marca de agua nominal: el tablero usa sus cifras, no sus capturas."
+    },
+    {
+      "tema": "Estructura",
+      "regla": "No cambiar nombres de pestañas, encabezados ni orden de columnas."
+    },
+    {
+      "tema": "Valores",
+      "regla": "Cifras del Anexo A tal como aparecen; H Cifra redondeada = Sí cuando la captura solo muestra el valor redondeado."
+    },
+    {
+      "tema": "Audiencias",
+      "regla": "Solo menciones de personas: se excluyen cuentas comerciales. Edad, estrato y actitudes salen de TGI (dueños del celular), no de cada perfil. Las fotos de las audience cards son ilustrativas."
+    }
+  ]
+}

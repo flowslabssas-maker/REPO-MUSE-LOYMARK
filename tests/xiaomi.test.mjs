@@ -12,6 +12,7 @@ test('Xiaomi HTML and images require an existing valid session',async()=>{
 });
 test('Xiaomi retains source images losslessly and rejects traversal',async()=>{
   const r=response();await handler(request(),r);assert.equal(r.code,200);assert.match(r.body,/Social Listening Xiaomi/);assert(Buffer.byteLength(r.body)<4_500_000);
+  for(const id of ['m-marca','m-pauta','m-plataformas','m-tienda','m-aud','m-aud-seg','m-aud-perf','m-aud-redes']) assert(r.body.includes('id="'+id+'"'),id+' missing');
   const names=await readdir('private/xiaomi-assets');assert(names.length>1000);
   const img=response();await handler(request({asset:names[0]}),img);assert.equal(img.code,200);assert.deepEqual(img.body,await readFile('private/xiaomi-assets/'+names[0]));
   const bad=response();await handler(request({asset:'../../.env'}),bad);assert.equal(bad.code,400);
