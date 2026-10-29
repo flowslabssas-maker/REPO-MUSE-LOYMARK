@@ -1,0 +1,15 @@
+html[data-muse-theme="dark"]{color-scheme:dark;--ink:#f1f3f5;--ink-2:#d0d5dc;--ink-3:#a8b2c1;--line:#3a414c;--line-2:#303640;--paper:#14171c;--panel:#1e2229;--tint:#272d36;--steel:#d0d5dc}
+html[data-muse-theme="dark"] .bar{background:rgba(20,23,28,.96)}
+html[data-muse-theme="dark"] :is(.chip[aria-pressed=true],.chip.lock){background:color-mix(in srgb,var(--c) 20%,#1e2229);color:#f1f3f5}
+html[data-muse-theme="dark"] :is(.seg,.tabs,nav.idx a:hover,nav.idx a[aria-current=true],.pcard .im,.au-card,.au-sb,.au-br .t,.au-pc blockquote,.au-voices blockquote){background:#272d36}
+html[data-muse-theme="dark"] :is(.mpanel,.mtile:hover,.mtile:focus-visible,.mtile .ic,.pcard,.au-tabs button:not([aria-selected=true]),.au-d,.au-b,.au-chips span,.au-pc,.tabs button[aria-selected=true],.tt,.pcard .nt){background:var(--panel)}
+html[data-muse-theme="dark"] :is(.kpi.hl,.au-seg,.au-mind,.au-tac){background:#32261f;border-color:#674733}
+html[data-muse-theme="dark"] :is(.kpi.hl .v,.au-mind h5,.au-l b,.au-seg h4){color:#ffa66d}
+html[data-muse-theme="dark"] :is(.au-pp b,.dlt.up){color:#6ed9aa}
+html[data-muse-theme="dark"] .dlt.dn{color:#ff9c96}
+html[data-muse-theme="dark"] .pending{background:repeating-linear-gradient(135deg,#1e2229 0 10px,#252a32 10px 20px)}
+html[data-muse-theme="dark"] .au-br .t u{background:#f1f3f5}
+/* Heatmap cells use light, data-driven backgrounds; keep their labels dark. */
+html[data-muse-theme="dark"] .heat .c{color:#1a2230}
+html[data-muse-theme="dark"] header.hero::before{opacity:.12}
+@media print{html[data-muse-theme="dark"]{color-scheme:light;--ink:#1a2230;--ink-2:#4a5568;--ink-3:#7b8696;--line:#e4e8ee;--line-2:#eef1f5;--paper:#fff;--panel:#fff;--tint:#f7f9fb}}

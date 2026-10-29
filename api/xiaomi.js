@@ -19,7 +19,7 @@ export default async function handler(request, response) {
     }
     const html = await readFile(join(process.cwd(), 'private', 'xiaomi.html'), 'utf8');
     response.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return response.status(200).send(html);
+    return response.status(200).send(html.replace('</head>', '<link rel="stylesheet" href="/xiaomi-theme.css"><script src="/xiaomi-theme.js"></script></head>'));
   } catch {
     return response.status(asset ? 404 : 500).send(asset ? 'Imagen no encontrada' : 'No se pudo cargar Xiaomi');
   }

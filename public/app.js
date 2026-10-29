@@ -288,7 +288,7 @@ function dashboard(email) {
   };
   app.querySelectorAll('[data-dashboard]').forEach(button => button.addEventListener('click', () => { location.href = button.dataset.dashboard === 'xiaomi' ? '/xiaomi' : '/'; }));
   if (xiaomiEnvironment) {
-    app.querySelector('[data-dashboard="hero"]').remove();
+    app.querySelector('[data-dashboard="hero"]').innerHTML = 'Ir a HERO<small>Cambiar de entorno</small>';
     app.querySelector('.scope').textContent = 'Xiaomi · Social Listening Colombia';
     selectDashboard('xiaomi');
   } else {
