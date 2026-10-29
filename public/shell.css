@@ -28,3 +28,13 @@
 @media(max-width:800px){.shell .top{padding-inline:12px;gap:8px}.top-left{gap:7px}.shell .brand{gap:8px}.shell .brand img{width:76px}.shell .layout{display:grid;grid-template-columns:minmax(0,1fr)}.shell .sidebar{padding:12px;display:flex;flex-direction:column;gap:10px}.shell.sidebar-collapsed .sidebar{display:none}.client-badge{min-height:76px}.shell .sidebar .hero-logo{width:124px}.shell .sidebar .aside-title,.shell .sidebar .scope{display:none}.shell .sidebar .nav{width:100%}.theme-label{display:none}.theme-toggle{width:36px;padding:0;justify-content:center}.shell .frame-wrap{padding:8px}.shell .page-head{padding:18px}}
 
 .shell .sidebar .nav[aria-current="false"]{background:transparent;color:#cbd5e1;margin-top:8px}
+
+/* Dedicated Xiaomi environment */
+.shell[data-client="xiaomi"]{--shell-bg:#f7f7f7;--shell-line:#e9e5e1}
+.shell[data-client="xiaomi"] .sidebar{background:#181818;border-color:#303030}
+.shell[data-client="xiaomi"] .nav{background:#ff6900;border-color:#ff6900;box-shadow:0 8px 24px #ff690026;color:#fff}
+.shell[data-client="xiaomi"] .eyebrow,.shell[data-client="xiaomi"] .brand strong{color:#ff6900}
+.shell[data-client="xiaomi"] .icon-button:hover,.shell[data-client="xiaomi"] .theme-toggle:hover{border-color:#ff6900}
+.xiaomi-identity{display:flex;align-items:center;gap:12px;color:#181818;font-size:27px;font-weight:700}
+.xiaomi-identity img{width:52px;height:52px;object-fit:contain}
+.shell[data-client="xiaomi"][data-theme="dark"]{--shell-bg:#121212;--shell-card:#1c1c1c;--shell-text:#fafafa;--shell-line:#333;--shell-button:#252525}

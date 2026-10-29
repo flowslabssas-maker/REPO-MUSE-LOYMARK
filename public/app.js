@@ -249,6 +249,7 @@ function form(step = 'email', message = '') {
 }
 
 function dashboard(email) {
+  const xiaomiEnvironment = location.pathname === '/xiaomi';
   stopStars(); stopFigure(); app.className = '';
   const getPreference = key => { try { return localStorage.getItem(key); } catch { return null; } };
   const savePreference = (key, value) => { try { localStorage.setItem(key, value); } catch {} };
@@ -266,7 +267,7 @@ function dashboard(email) {
     </header>
     <div class="layout">
       <aside class="sidebar"><div class="client-badge"><img class="hero-logo" src="/assets/hero.png" alt="HERO"></div><div class="aside-title">NAVEGACIÓN</div><button class="nav" data-dashboard="hero" type="button">Dashboard HERO<small>Radar de mercado y motocicletas</small></button><button class="nav" data-dashboard="xiaomi" type="button">Dashboard Xiaomi<small>Social Listening</small></button><div class="scope">MUSE · Social Media Intelligence</div></aside>
-      <main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe id="hero-frame" title="Dashboard HERO Motos" src="/api/hero?theme=${initialTheme}" loading="eager"></iframe></div></main>
+      <main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe id="hero-frame" title="Dashboard HERO Motos" src="${xiaomiEnvironment ? '/api/xiaomi' : '/api/hero?theme=' + initialTheme}" loading="eager"></iframe></div></main>
     </div>
   </div>`;
   const shell = app.querySelector('.shell');
@@ -275,16 +276,25 @@ function dashboard(email) {
   const frame = document.getElementById('hero-frame');
   const selectDashboard = name => {
     const xiaomi = name === 'xiaomi';
+    shell.dataset.client = xiaomi ? 'xiaomi' : 'hero';
+    document.title = xiaomi ? 'Xiaomi · MUSE' : 'HERO · MUSE';
     frame.src = xiaomi ? '/api/xiaomi' : '/api/hero?theme=' + shell.dataset.theme;
     frame.title = xiaomi ? 'Social Listening Xiaomi' : 'Dashboard HERO Motos';
     app.querySelector('.page-head h1').textContent = xiaomi ? 'Dashboard Estratégico · Xiaomi' : 'Dashboard Estratégico · HERO';
     app.querySelector('.page-head p').textContent = xiaomi ? 'Social Listening · Conversación y análisis de marca.' : 'Mercado, marcas, vehículos y conversación en un solo lugar.';
     app.querySelector('.brand strong').textContent = xiaomi ? 'XIAOMI' : 'HERO';
-    app.querySelector('.client-badge').innerHTML = xiaomi ? '<strong style="color:#ff6900;font-size:28px">Xiaomi</strong>' : '<img class="hero-logo" src="/assets/hero.png" alt="HERO">';
+    app.querySelector('.client-badge').innerHTML = xiaomi ? '<div class="xiaomi-identity"><img src="/assets/xiaomi.ico" alt="Xiaomi"><strong>Xiaomi</strong></div>' : '<img class="hero-logo" src="/assets/hero.png" alt="HERO">';
     app.querySelectorAll('[data-dashboard]').forEach(button => button.setAttribute('aria-current', button.dataset.dashboard === name ? 'page' : 'false'));
   };
-  app.querySelectorAll('[data-dashboard]').forEach(button => button.addEventListener('click', () => selectDashboard(button.dataset.dashboard)));
-  app.querySelector('[data-dashboard="hero"]').setAttribute('aria-current', 'page');
+  app.querySelectorAll('[data-dashboard]').forEach(button => button.addEventListener('click', () => { location.href = button.dataset.dashboard === 'xiaomi' ? '/xiaomi' : '/'; }));
+  if (xiaomiEnvironment) {
+    app.querySelector('[data-dashboard="hero"]').remove();
+    app.querySelector('.scope').textContent = 'Xiaomi · Social Listening Colombia';
+    selectDashboard('xiaomi');
+  } else {
+    shell.dataset.client = 'hero';
+    app.querySelector('[data-dashboard="hero"]').setAttribute('aria-current', 'page');
+  }
 
   const setSidebarCollapsed = collapsed => {
     shell.classList.toggle('sidebar-collapsed', collapsed);
