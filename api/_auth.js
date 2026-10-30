@@ -15,9 +15,13 @@ export function normalizeEmail(value) {
   return String(value || '').normalize('NFKC').replace(/[\s\p{Cf}]/gu, '').toLowerCase();
 }
 
+function xiaomiEmail(email) {
+  return /^[^@\s]+@xiaomi\.com$/.test(normalizeEmail(email));
+}
+
 export function allowed(email) {
   const normalized = normalizeEmail(email);
-  if (BOTH_CLIENTS_EMAILS.has(normalized)) return true;
+  if (BOTH_CLIENTS_EMAILS.has(normalized) || xiaomiEmail(normalized)) return true;
   if (directAllowed(normalized)) return true;
   const list = (process.env.HERO_ALLOWED_EMAILS || 'ivon.lopez@mergeto.co,maria.garcia@mergeto.co,diegodimon1902@gmail.com')
     .split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
@@ -28,6 +32,7 @@ export function allowed(email) {
 export function clientsForEmail(email) {
   const normalized = normalizeEmail(email);
   if (!allowed(normalized)) return [];
+  if (xiaomiEmail(normalized)) return ['xiaomi'];
   return BOTH_CLIENTS_EMAILS.has(normalized) ? ['hero', 'xiaomi'] : ['hero'];
 }
 
@@ -36,6 +41,7 @@ export function canAccessClient(session, client) {
 }
 
 export function directAllowed(email) {
+  if (xiaomiEmail(email)) return false;
   const normalized = normalizeEmail(email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalized)) return false;
   const domains = (process.env.HERO_DIRECT_DOMAINS || 'hmclcolombia.com')
