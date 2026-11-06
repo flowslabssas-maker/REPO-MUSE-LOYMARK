@@ -271,7 +271,7 @@ function dashboard(email, clients) {
       <main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe id="hero-frame" title="Dashboard HERO Motos" src="${xiaomiEnvironment ? '/api/xiaomi' : '/api/hero?theme=' + initialTheme}" loading="eager"></iframe></div></main>
     </div>
   </div>`;
-  app.querySelectorAll('[data-dashboard]').forEach(button => { if (!clients.includes(button.dataset.dashboard)) button.remove(); });
+  app.querySelectorAll('[data-dashboard]').forEach(button => { if (!clients.includes(button.dataset.dashboard) || button.dataset.dashboard !== (xiaomiEnvironment ? 'xiaomi' : 'hero')) button.remove(); });
   const clientsLink = document.createElement('a');
   clientsLink.href = '/'; clientsLink.className = 'clients-back'; clientsLink.textContent = '← Clientes';
   app.querySelector('.top-left').prepend(clientsLink);
@@ -293,7 +293,7 @@ function dashboard(email, clients) {
   };
   app.querySelectorAll('[data-dashboard]').forEach(button => button.addEventListener('click', () => { location.href = button.dataset.dashboard === 'xiaomi' ? '/xiaomi' : '/hero'; }));
   if (xiaomiEnvironment) {
-    app.querySelector('[data-dashboard="hero"]').innerHTML = 'Ir a HERO<small>Cambiar de entorno</small>';
+
     app.querySelector('.scope').textContent = 'Xiaomi · Social Listening Colombia';
     selectDashboard('xiaomi');
   } else {

@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Radar Hero Motos</title>
 <style>body{margin:0;font-size:14px}[hidden]{display:none!important}img{max-width:100%}</style>
-</head>
+<style>
+html[data-muse-theme="dark"]{color-scheme:dark;--bg:#0b1020;--surface:#141d2d;--card:#111827;--line:#2b374b;--line-2:#455168;--fg:#d9e2ef;--ink:#f8fafc;--muted:#a9b8cc;--faint:#8596ae;--soft:#2b1823;--amber-ink:#ff9bad;--good-soft:#103521;--bad-soft:#3a1b25;--shadow:0 1px 3px #0005,0 8px 24px #0003}
+html[data-muse-theme="dark"] .t-pub{background:#29304c;color:#c7d2fe}
+html[data-muse-theme="dark"] .t-user{background:#39243d;color:#f4c9f9}
+html[data-muse-theme="dark"] .t-deck{background:#362723;color:#ffd4b4}
+html[data-muse-theme="dark"] .vb{background:#192338}
+html[data-muse-theme="dark"] body{overflow-x:hidden}
+</style><script>
+document.documentElement.dataset.museTheme="light";
+window.addEventListener('message',function(event){if(event.origin!==location.origin||event.source!==window.parent)return;if(event.data?.type==='muse-theme'&&(event.data.theme==='dark'||event.data.theme==='light'))document.documentElement.dataset.museTheme=event.data.theme});
+</script><script defer src="/hero-analytics.js"></script></head>
 <body>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1256,6 +1266,242 @@ merge();show(S.tab);
 </script>
 
 <script src="/dashboards/dashboard-image-lightbox.js"></script>
+
+<!-- ===== Recorrido guiado (autocontenido · sin dependencias) ===== -->
+<style id="hero-tour-css">
+.tour-launch{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap}
+.tour-launch:hover{border-color:var(--orange);color:var(--amber-ink)}
+.tour-launch svg{flex:none}
+.tour-block{position:fixed;inset:0;z-index:9990;background:transparent}
+.tour-spot{position:absolute;z-index:9991;border-radius:14px;pointer-events:none;box-shadow:0 0 0 3px var(--orange),0 0 0 99999px rgba(15,23,42,.58);transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease}
+html[data-muse-theme="dark"] .tour-spot{box-shadow:0 0 0 3px var(--orange),0 0 0 99999px rgba(0,0,0,.66)}
+.tour-focus{position:absolute;pointer-events:none;visibility:hidden}
+.tour-pop{position:absolute;z-index:9992;width:min(380px,calc(100vw - 24px));background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px rgba(15,23,42,.28);padding:16px 18px 14px;font-family:var(--f-ui);font-size:13px;line-height:1.5;transition:left .25s ease,top .25s ease}
+.tour-pop:focus{outline:none}
+.tour-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.tour-step{font-family:var(--f-mono);font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--amber-ink)}
+.tour-sec{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);background:var(--surface);border-radius:999px;padding:2px 8px}
+.tour-x{margin-left:auto;border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;padding:2px 4px;border-radius:6px}
+.tour-x:hover{color:var(--ink)}
+.tour-pop h4{margin:0 0 6px;font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.005em}
+.tour-pop p{margin:0;color:var(--fg)}
+.tour-pop ul{margin:6px 0 0;padding-left:16px;display:grid;gap:3px}
+.tour-pop b{color:var(--ink)}
+.tour-bar{height:3px;background:var(--line);border-radius:2px;margin:12px 0 10px;overflow:hidden}
+.tour-bar i{display:block;height:100%;background:var(--grad);border-radius:2px;transition:width .25s ease}
+.tour-nav{display:flex;align-items:center;gap:8px}
+.tour-skip{border:0;background:transparent;color:var(--muted);font:inherit;font-size:12px;cursor:pointer;padding:6px 2px;text-decoration:underline;text-underline-offset:2px}
+.tour-skip:hover{color:var(--ink)}
+.tour-nav .sp{flex:1}
+.tour-btn{border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:9px;padding:8px 13px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.tour-btn.pri{background:var(--grad);color:#fff;border-color:transparent}
+.tour-btn:disabled{opacity:.4;cursor:default}
+@media (max-width:640px){.tour-pop{padding:14px 14px 12px;font-size:12.5px}.tour-pop h4{font-size:14px}.tour-btn{padding:8px 11px}}
+@media (prefers-reduced-motion:reduce){.tour-spot,.tour-pop,.tour-bar i{transition:none}}
+</style>
+<script id="hero-tour-js">
+(function(){
+  'use strict';
+  var KEY='hero-tour-v1';
+  var $=function(s){return document.querySelector(s)};
+  var card=function(s){return function(){var e=$(s);return e?e.closest('.card'):null}};
+  var SEC={resumen:'Resumen',mercado:'Mercado',marcas:'Marcas y modelos',territorio:'Territorio',inversion:'Inversión y medios',social:'Social Agent',contenidos:'Contenidos',busqueda:'Búsqueda e IA',crm:'CRM y ventas'};
+
+  var STEPS=[
+    {sel:'.modhead',title:'Bienvenido al Radar de Hero Motos',
+     text:'<p>Este tablero reúne en un solo lugar el mercado de motos en Colombia, las marcas, el territorio, la inversión publicitaria, la conversación en redes, los contenidos y la búsqueda.</p><p style="margin-top:6px">En este recorrido te mostramos cómo leerlo. Puedes avanzar con las flechas del teclado y salir con Esc.</p>'},
+    {tab:'resumen',sel:'#fg-foco',title:'Elige con quién comparar',
+     text:'<p><b>Hero vs. categoría</b> pone a Hero frente al total del mercado. <b>Hero vs. líderes</b> la compara con AKT, Bajaj y Suzuki. <b>Todas</b> activa todas las marcas.</p><p style="margin-top:6px">También puedes prender o apagar marcas una por una con los chips de color. Todo el tablero se recalcula.</p>'},
+    {tab:'resumen',sel:'#fg-periodo',title:'Elige el periodo',
+     text:'<p>Cambia la ventana de tiempo: 2026 (ene–ago), 2025, 2024 o todo el histórico (ene 2024 – ago 2026).</p><p style="margin-top:6px">Cada tarjeta indica el periodo que muestra. Las que dicen <b>“Periodo de la fuente … no cambia con el filtro”</b> tienen una fecha fija propia de su fuente.</p>'},
+    {tab:'resumen',sel:'#tabs',title:'Nueve secciones',
+     text:'<p>Resumen, Mercado, Marcas y modelos, Territorio, Inversión y medios, Social Agent, Contenidos, Búsqueda e IA, y CRM y ventas.</p><p style="margin-top:6px">Cada sección responde una pregunta estratégica. El recorrido pasa por todas.</p>'},
+    {tab:'resumen',sel:'.thesis',title:'La lectura central',
+     text:'<p>La conclusión principal del tablero en una frase. Se calcula a partir de los datos, así que cambia cuando eliges otra marca u otro periodo.</p>'},
+    {tab:'resumen',sel:'#res-kpis',title:'Los cuatro indicadores clave',
+     text:'<p>Ventas y participación de mercado, participación en la inversión ATL, presencia en recomendaciones de IA y ritmo de la participación dentro del año.</p><p style="margin-top:6px">La cifra en verde o rojo compara con el periodo anterior. Si eliges varias marcas, se convierten en una tabla comparativa.</p>'},
+    {tab:'resumen',sel:card('#c-map'),title:'Mapa competitivo',
+     text:'<p>Cada burbuja es una marca. <b>Hacia la derecha</b>, más participación de mercado; <b>hacia arriba</b>, más ganancia de participación frente al periodo anterior. El tamaño de la burbuja son las unidades vendidas.</p>'},
+    {tab:'resumen',sel:function(){var c=card('#c-map')();return c?c.querySelector('.tag'):null},title:'Etiquetas de fuente',
+     text:'<p>Cada tarjeta indica de dónde viene su dato:</p><ul><li><b>Pública</b>: fuentes públicas (ANDI–Fenalco/RUNT, Google, Andemos).</li><li><b>Muse</b>: inversión publicitaria medida por Ibope en Muse.</li><li><b>Cruce</b>: combina dos fuentes, por ejemplo pauta frente a ventas.</li><li><b>Propuesta</b>: datos y lecturas de la propuesta estratégica.</li><li><b>Hero</b>: datos entregados por Hero.</li><li><b>Social Agent</b> y <b>Admetricks</b>: escucha social e inversión digital.</li></ul>'},
+    {tab:'resumen',sel:card('#findings'),title:'Lo que sostiene la lectura',
+     text:'<p>Los hallazgos que respaldan la conclusión. El botón <b>Ver</b> de cada uno te lleva a la sección donde está la evidencia.</p>'},
+    {tab:'mercado',sel:'#mk-kpis',title:'Tamaño del mercado',
+     text:'<p>Cuántas motos nuevas se registraron en el periodo, cuál fue el mes pico, cuántas unidades vendió la marca foco y si creció más o menos que el mercado.</p>'},
+    {tab:'mercado',sel:card('#c-mensual'),title:'Registros mes a mes',
+     text:'<p>Motos nuevas registradas cada mes en Colombia. La <b>línea punteada</b> es el mismo mes del año anterior: así se ve si el mercado está creciendo.</p>'},
+    {tab:'marcas',sel:card('#c-share'),title:'Participación de mercado',
+     text:'<p>Qué porcentaje de las motos registradas corresponde a cada marca en el periodo elegido.</p>'},
+    {tab:'marcas',sel:card('#rank-rows'),title:'Ranking del periodo',
+     text:'<p>Unidades, participación y variación frente al año anterior de cada marca. La fila resaltada es la marca foco.</p>'},
+    {tab:'territorio',sel:card('#c-scatter'),title:'Volumen vs. interés por departamento',
+     text:'<p>Cada punto es un departamento. <b>Hacia la derecha</b>, mayor porcentaje de las motos registradas en el país; <b>hacia arriba</b>, más interés de búsqueda en la categoría. El color marca los departamentos donde la marca foco pesa más que su promedio nacional en la búsqueda de marca.</p>'},
+    {tab:'inversion',sel:'#inv-kpis',title:'Inversión en medios tradicionales (ATL)',
+     text:'<p>La participación de la marca foco en la inversión ATL, quién lidera esa inversión, cuántos meses tuvo pauta y en qué medio concentra su presupuesto. Fuente: Ibope vía Muse.</p>'},
+    {tab:'inversion',sel:card('#c-atldig'),title:'ATL vs. digital frente a ventas',
+     text:'<p>Compara el peso de cada marca en la inversión ATL y en digital con su peso en ventas. Si una marca pesa más en inversión que en ventas, pauta por encima de su tamaño; si pesa menos, vende con menos pauta.</p>'},
+    {tab:'social',sel:'#so-kpis',title:'Conversación en redes',
+     text:'<p>Menciones de la marca foco en 12 meses, su <b>share of conversation</b> (qué parte de la conversación de la categoría es suya), el sentimiento promedio y las impresiones sociales. Fuente: Social Agent.</p>'},
+    {tab:'social',sel:function(){var e=$('#f-nets');return e?e.parentElement:null},title:'Filtra por red social',
+     text:'<p>Prende o apaga cada red social para ver solo la conversación que ocurre en ellas. Los indicadores y gráficas de esta sección se recalculan.</p>'},
+    {tab:'contenidos',sel:card('.terr'),title:'Territorios de contenido',
+     text:'<p>A la izquierda, de qué hablan hoy las marcas de la categoría. A la derecha, lo que el consumidor asocia a su moto. Lo que está a la derecha y nadie dice es el territorio libre para Hero.</p>'},
+    {tab:'busqueda',sel:'#bu-kpis',title:'Búsqueda en Google',
+     text:'<p>El interés de búsqueda de la marca foco, su crecimiento en 5 años y su presencia en las respuestas de la IA de Google.</p>'},
+    {tab:'busqueda',sel:card('#c-iag'),title:'Presencia en recomendaciones de IA',
+     text:'<p>Cuando alguien le pide a la IA de Google que le recomiende una moto sin nombrar marca: qué porcentaje de las menciones recibe cada marca y en cuántas respuestas aparece. Son 14 preguntas, consultadas el 29-sep-2026.</p>'},
+    {tab:'crm',sel:'.crm-sim',title:'CRM y ventas: datos simulados',
+     text:'<p>Esta sección es un <b>piloto</b>: muestra cómo se verá el camino del anuncio a la moto entregada cuando se conecte el CRM real. Los datos son simulados y están calibrados con la línea base que entregó Hero.</p>'},
+    {tab:'crm',sel:'#crm-tabs',title:'Vistas del CRM',
+     text:'<p>Resumen 360, medios y campañas, modelos, red de distribuidores, WhatsApp y nutrición, y territorio. Los filtros de periodo, frente, región, distribuidor, modelo y canal aplican a todas las vistas.</p>'},
+    {tab:'__orig',sel:'.tour-launch',title:'¡Listo!',
+     text:'<p>Ya conoces el tablero. Puedes repetir este recorrido cuando quieras con este botón.</p>'}
+  ];
+
+  var st=null; // estado del recorrido activo
+
+  function curTab(){var b=$('#tabs .tab[aria-selected="true"]');return b?b.dataset.t:null}
+  function goTab(t){if(!t||t===curTab())return false;var b=$('#tabs .tab[data-t="'+t+'"]');if(!b)return false;b.click();return true}
+  function el(step){var e=typeof step.sel==='function'?step.sel():$(step.sel);if(!e)return null;var r=e.getBoundingClientRect();return (r.width>0&&r.height>0)?e:null}
+  function docRect(e){var r=e.getBoundingClientRect();return {x:r.left+window.scrollX,y:r.top+window.scrollY,w:r.width,h:r.height}}
+  function mk(tag,cls,html){var n=document.createElement(tag);if(cls)n.className=cls;if(html!=null)n.innerHTML=html;return n}
+
+  function build(){
+    var block=mk('div','tour-block');
+    var spot=mk('div','tour-spot');
+    var focus=mk('div','tour-focus');
+    var pop=mk('div','tour-pop');
+    pop.setAttribute('role','dialog');pop.setAttribute('aria-modal','true');pop.setAttribute('aria-labelledby','tour-title');pop.tabIndex=-1;
+    pop.innerHTML='<div class="tour-top"><span class="tour-step"></span><span class="tour-sec"></span><button class="tour-x" type="button" aria-label="Cerrar recorrido">×</button></div>'+
+      '<h4 id="tour-title"></h4><div class="tour-body"></div><div class="tour-bar"><i></i></div>'+
+      '<div class="tour-nav"><button class="tour-skip" type="button">Saltar recorrido</button><span class="sp"></span><button class="tour-btn tour-prev" type="button">Anterior</button><button class="tour-btn pri tour-next" type="button">Siguiente</button></div>';
+    [block,spot,focus,pop].forEach(function(n){document.body.appendChild(n)});
+    pop.querySelector('.tour-x').onclick=end;
+    pop.querySelector('.tour-skip').onclick=end;
+    pop.querySelector('.tour-prev').onclick=function(){go(st.i-1,-1)};
+    pop.querySelector('.tour-next').onclick=function(){if(st.i>=STEPS.length-1)end();else go(st.i+1,1)};
+    return {block:block,spot:spot,focus:focus,pop:pop};
+  }
+
+  function place(scroll){
+    if(!st||!st.target)return;
+    var e=st.target, ui=st.ui;
+    if(!document.body.contains(e)||!e.getBoundingClientRect().width){e=el(STEPS[st.i]);if(!e)return;st.target=e}
+    var r=docRect(e), pad=6;
+    var docW=document.documentElement.clientWidth;
+    ui.spot.style.left=(r.x-pad)+'px';ui.spot.style.top=(r.y-pad)+'px';
+    ui.spot.style.width=(r.w+pad*2)+'px';ui.spot.style.height=(r.h+pad*2)+'px';
+    var pw=ui.pop.offsetWidth, ph=ui.pop.offsetHeight, gap=14;
+    var left=Math.min(Math.max(12,r.x),Math.max(12,docW-pw-12));
+    // Por defecto debajo; si el elemento es alto y hay sitio arriba, encima.
+    var top, above=(r.h>360&&r.y-ph-gap-pad>8);
+    top=above?(r.y-ph-gap-pad):(r.y+r.h+gap+pad);
+    ui.pop.style.left=left+'px';ui.pop.style.top=top+'px';
+    // zona a mostrar: burbuja + elemento (si el elemento es alto, solo su parte cercana a la burbuja)
+    var visH=Math.min(r.h,300);
+    var fy=above?top:(r.y+r.h-visH);
+    var fb=above?(r.y+visH):(top+ph);
+    if(!above&&r.h<=300)fy=r.y;
+    ui.focus.style.left=r.x+'px';ui.focus.style.width=Math.max(1,r.w)+'px';
+    ui.focus.style.top=(fy-pad-8)+'px';ui.focus.style.height=(fb-fy+pad+16)+'px';
+    if(scroll){
+      var smooth=!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+      try{ui.focus.scrollIntoView({behavior:smooth?'smooth':'auto',block:'center',inline:'nearest'})}catch(x){ui.focus.scrollIntoView()}
+    }
+  }
+
+  function render(){
+    var s=STEPS[st.i], ui=st.ui, n=STEPS.length;
+    ui.pop.querySelector('.tour-step').textContent='Paso '+(st.i+1)+' de '+n;
+    var t=curTab();
+    var sec=ui.pop.querySelector('.tour-sec');
+    sec.textContent=(s.tab&&s.tab!=='__orig'&&SEC[t])?SEC[t]:'';sec.hidden=!sec.textContent;
+    ui.pop.querySelector('#tour-title').textContent=s.title;
+    ui.pop.querySelector('.tour-body').innerHTML=s.text;
+    ui.pop.querySelector('.tour-bar i').style.width=((st.i+1)/n*100)+'%';
+    ui.pop.querySelector('.tour-prev').disabled=st.i===0;
+    ui.pop.querySelector('.tour-next').textContent=st.i===n-1?'Terminar':'Siguiente';
+    ui.pop.querySelector('.tour-skip').style.visibility=st.i===n-1?'hidden':'visible';
+    place(true);
+    try{ui.pop.querySelector('.tour-next').focus({preventScroll:true})}catch(x){}
+  }
+
+  function go(i,dir){
+    if(!st)return;
+    var tok=++st.tok;
+    if(i<0||i>=STEPS.length){end();return}
+    var s=STEPS[i];
+    var want=s.tab==='__orig'?st.orig:s.tab;
+    var switched=goTab(want);
+    setTimeout(function(){
+      if(!st||tok!==st.tok)return;
+      var e=el(s);
+      if(!e){ // elemento no disponible: saltar en la misma dirección
+        if(dir<0&&i===0){st.i=0;return go(0,1)}
+        return go(i+(dir<0?-1:1),dir);
+      }
+      st.i=i;st.target=e;render();
+    },switched?380:30);
+  }
+
+  function onKey(ev){
+    if(!st)return;
+    if(ev.key==='Escape'){ev.preventDefault();end()}
+    else if(ev.key==='ArrowRight'){ev.preventDefault();if(st.i>=STEPS.length-1)end();else go(st.i+1,1)}
+    else if(ev.key==='ArrowLeft'){ev.preventDefault();if(st.i>0)go(st.i-1,-1)}
+    else if(ev.key==='Tab'){ // mantener el foco dentro de la burbuja
+      var f=[].slice.call(st.ui.pop.querySelectorAll('button')).filter(function(b){return !b.disabled&&b.offsetParent!==null&&b.style.visibility!=='hidden'});
+      if(!f.length)return;var a=document.activeElement,k=f.indexOf(a);
+      ev.preventDefault();var nx=ev.shiftKey?(k<=0?f.length-1:k-1):(k<0||k===f.length-1?0:k+1);f[nx].focus({preventScroll:true});
+    }
+  }
+  var raf=0;function onLayout(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;place(false)})}
+
+  function start(){
+    if(st)return;
+    if(!$('#tabs .tab'))return; // el tablero aún no termina de cargar
+    st={i:0,tok:0,orig:curTab()||'resumen',ui:build(),target:null,last:document.activeElement};
+    document.addEventListener('keydown',onKey,true);
+    window.addEventListener('resize',onLayout);
+    if(window.ResizeObserver){st.ro=new ResizeObserver(onLayout);st.ro.observe(document.body)}
+    try{localStorage.setItem(KEY,'1')}catch(x){}
+    go(0,1);
+  }
+
+  function end(){
+    if(!st)return;
+    var s=st;st=null;
+    document.removeEventListener('keydown',onKey,true);
+    window.removeEventListener('resize',onLayout);
+    if(s.ro)s.ro.disconnect();
+    ['block','spot','focus','pop'].forEach(function(k){s.ui[k].remove()});
+    goTab(s.orig);
+    var b=$('.tour-launch');if(b){try{b.focus({preventScroll:true})}catch(x){}}
+  }
+
+  function addLauncher(){
+    if($('.tour-launch'))return;
+    var meta=$('.modhead .meta');if(!meta)return;
+    var b=mk('button','tour-launch','<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Ver recorrido');
+    b.type='button';b.title='Recorrido guiado por el tablero';b.onclick=start;
+    meta.appendChild(b);
+  }
+
+  function init(){
+    addLauncher();
+    var seen=true;try{seen=localStorage.getItem(KEY)==='1'}catch(x){seen=true}
+    if(seen)return;
+    var tries=0;(function wait(){ // esperar a que el tablero pinte pestañas e indicadores
+      if($('#tabs .tab')&&$('#res-kpis')&&($('#res-kpis').children.length||curTab()!=='resumen'))return setTimeout(start,700);
+      if(++tries<40)setTimeout(wait,150);
+    })();
+  }
+
+  window.heroTour={start:start,end:end};
+  if(document.readyState==='complete')init();else window.addEventListener('load',init);
+})();
+</script>
+<!-- ===== /Recorrido guiado ===== -->
 
 </body>
 </html>
