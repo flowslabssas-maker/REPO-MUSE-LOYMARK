@@ -13,6 +13,10 @@
     "api/xiaomi.js": {
       "includeFiles": "private/xiaomi*{,/**}",
       "maxDuration": 15
+    },
+    "api/area-andina.js": {
+      "includeFiles": "private/area-andina*{,/**}",
+      "maxDuration": 15
     }
   },
   "headers": [
@@ -37,6 +41,10 @@
     },
     {
       "source": "/hero",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/area-andina",
       "destination": "/index.html"
     }
   ]

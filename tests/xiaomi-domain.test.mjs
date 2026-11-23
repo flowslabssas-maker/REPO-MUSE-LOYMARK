@@ -14,5 +14,5 @@ test('exact Xiaomi domain is OTP-only and isolated from HERO',async()=>{
   }
   for(const email of ['person@xiaomi.com.evil.test','person@sub.xiaomi.com','person@@xiaomi.com']) assert.equal(allowed(email),false);
   assert.deepEqual(clientsForEmail('person@hmclcolombia.com'),['hero']);
-  assert.deepEqual(clientsForEmail('diegodimon1902@gmail.com'),['hero','xiaomi']);
+  assert.deepEqual(clientsForEmail('diegodimon1902@gmail.com'),['hero','xiaomi','area-andina']);
 });

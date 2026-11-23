@@ -1,0 +1,10 @@
+html[data-muse-theme="dark"],html[data-muse-theme="dark"] .au-crm{color-scheme:dark;--bg:#14191c;--surface:#20272b;--card:#1b2226;--line:#39444a;--line-2:#4a575e;--fg:#d6dedf;--ink:#f0f4ef;--muted:#b1bcb9;--faint:#95a39c;--aa-dark:#b3db7d;--aa-soft:#263323;--aa-tint:#364d29;--orange-ink:#f3bd71;--orange-soft:#3b2e1c;--good:#95d49a;--good-soft:#21392a;--bad:#ffa29b;--bad-soft:#412923;--neu:#465348;--soft:#263323;--amber-ink:#e4c88b}
+html[data-muse-theme="dark"] :is(.topbar,.pill,.tile,.controls,.go,.ms-panel,#msQ,.ms-o input,.t-aprox,.keys a,.insight.si,th,.cmpcard,.pend .pi,.xa-b,.xt-card,dialog.xp,.xp-ch,.xp-sub,.xp-cb,.rp,.mb-c){background:var(--card)}
+html[data-muse-theme="dark"] :is(select,.sel,.au-crm select){background-color:var(--card);color:var(--ink)}
+html[data-muse-theme="dark"] :is(.mb-t,.mb-cv,.dp-h){color:var(--ink)}
+html[data-muse-theme="dark"] .tt{background:#29342d;color:#fff}
+html[data-muse-theme="dark"] .topbar .brand img{background:#fff;border-radius:4px;padding:3px}
+@media(max-width:640px){.wrap,.in{max-width:100%;min-width:0}.grid>*{min-width:0}.controls .in{min-width:0}.topbar .in{flex-wrap:wrap}.tabs{overflow-x:auto;max-width:100%}}
+@media print{html[data-muse-theme="dark"],html[data-muse-theme="dark"] .au-crm{color-scheme:light;--bg:#fff;--surface:#F6F7F4;--card:#fff;--fg:#414141;--ink:#222;--muted:#666;--line:#E3E6DF;--line-2:#CBD0C4;--aa-dark:#406808;--aa-soft:#F1F7E7;--aa-tint:#DCEDC2}}
+
+.topbar{display:none}.modhead .in{flex-wrap:wrap}.modhead .mh-t{flex:1 1 280px;min-width:0}.modhead .meta{flex:1 1 100%;flex-wrap:wrap}.modhead h1{min-width:0}

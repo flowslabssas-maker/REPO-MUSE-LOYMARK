@@ -1,0 +1,11 @@
+﻿import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile,readdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import handler from '../api/area-andina.js';
+import {createSession,clientsForEmail} from '../api/_auth.js';
+process.env.MUSE_SESSION_SECRET='test-only-area-andina-secret-longer-than32characters';
+const response=()=>({headers:{},setHeader(k,v){this.headers[k]=v},status(n){this.code=n;return this},send(v){this.body=v;return this}});
+const req=(email,query={})=>({method:'GET',query,headers:{cookie:email?'muse_hero_session='+createSession(email,'otp'):''}});
+test('Area Andina is isolated from HERO and Xiaomi client accounts',async()=>{for(const [email,status] of [[null,401],['person@xiaomi.com',403],['person@hmclcolombia.com',403],['diegodimon1902@gmail.com',200]]){const res=response();await handler(req(email),res);assert.equal(res.code,status);if(status===200){assert.equal(res.headers['Cache-Control'],'private, no-store, max-age=0');assert(res.body.includes('area-andina-theme.css'));assert(Buffer.byteLength(res.body)<4500000)}}});
+test('Area Andina image route rejects traversal and retains original bytes',async()=>{const names=await readdir('private/area-andina-assets');assert(names.length>600);const res=response();await handler(req('diegodimon1902@gmail.com',{asset:names[0]}),res);assert.equal(res.code,200);assert.equal(createHash('sha256').update(res.body).digest('hex'),names[0].split('.')[0]);const bad=response();await handler(req('diegodimon1902@gmail.com',{asset:'../../.env'}),bad);assert.equal(bad.code,400);});

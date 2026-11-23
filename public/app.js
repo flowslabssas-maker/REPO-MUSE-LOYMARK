@@ -251,6 +251,8 @@ function form(step = 'email', message = '') {
 function dashboard(email, clients) {
   document.title = 'MUSE Loymark';
   const xiaomiEnvironment = location.pathname === '/xiaomi';
+  const areaAndinaEnvironment = location.pathname === '/area-andina';
+  const clientId = areaAndinaEnvironment ? 'area-andina' : xiaomiEnvironment ? 'xiaomi' : 'hero';
   stopStars(); stopFigure(); app.className = '';
   const getPreference = key => { try { return localStorage.getItem(key); } catch { return null; } };
   const savePreference = (key, value) => { try { localStorage.setItem(key, value); } catch {} };
@@ -267,11 +269,11 @@ function dashboard(email, clients) {
       </div>
     </header>
     <div class="layout">
-      <aside class="sidebar"><div class="client-badge"><img class="hero-logo" src="/assets/hero.png" alt="HERO"></div><div class="aside-title">NAVEGACIÓN</div><button class="nav" data-dashboard="hero" type="button">Dashboard HERO<small>Radar de mercado y motocicletas</small></button><button class="nav" data-dashboard="xiaomi" type="button">Dashboard Xiaomi<small>Social Listening</small></button><div class="scope">MUSE · Social Media Intelligence</div></aside>
-      <main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe id="hero-frame" title="Dashboard HERO Motos" src="${xiaomiEnvironment ? '/api/xiaomi' : '/api/hero?theme=' + initialTheme}" loading="eager"></iframe></div></main>
+      <aside class="sidebar"><div class="client-badge"><img class="hero-logo" src="/assets/hero.png" alt="HERO"></div><div class="aside-title">NAVEGACIÓN</div><button class="nav" data-dashboard="hero" type="button">Dashboard HERO<small>Radar de mercado y motocicletas</small></button><button class="nav" data-dashboard="xiaomi" type="button">Dashboard Xiaomi<small>Social Listening</small></button><button class="nav" data-dashboard="area-andina" type="button">Dashboard Área Andina<small>Radar de mercado universitario</small></button><div class="scope">MUSE · Social Media Intelligence</div></aside>
+      <main><div class="page-head"><div class="eyebrow">MUSE · INTELIGENCIA DE MERCADO</div><h1>Dashboard Estratégico · HERO</h1><p>Mercado, marcas, vehículos y conversación en un solo lugar.</p></div><div class="frame-wrap"><iframe id="hero-frame" title="Dashboard HERO Motos" src="${areaAndinaEnvironment ? '/api/area-andina' : xiaomiEnvironment ? '/api/xiaomi' : '/api/hero?theme=' + initialTheme}" loading="eager"></iframe></div></main>
     </div>
   </div>`;
-  app.querySelectorAll('[data-dashboard]').forEach(button => { if (!clients.includes(button.dataset.dashboard) || button.dataset.dashboard !== (xiaomiEnvironment ? 'xiaomi' : 'hero')) button.remove(); });
+  app.querySelectorAll('[data-dashboard]').forEach(button => { if (!clients.includes(button.dataset.dashboard) || button.dataset.dashboard !== clientId) button.remove(); });
   const clientsLink = document.createElement('a');
   clientsLink.href = '/'; clientsLink.className = 'clients-back'; clientsLink.textContent = '← Clientes';
   app.querySelector('.top-left').prepend(clientsLink);
@@ -291,8 +293,18 @@ function dashboard(email, clients) {
     app.querySelector('.client-badge').innerHTML = xiaomi ? '<div class="xiaomi-identity"><img src="/assets/xiaomi.ico" alt="Xiaomi"><strong>Xiaomi</strong></div>' : '<img class="hero-logo" src="/assets/hero.png" alt="HERO">';
     app.querySelectorAll('[data-dashboard]').forEach(button => button.setAttribute('aria-current', button.dataset.dashboard === name ? 'page' : 'false'));
   };
-  app.querySelectorAll('[data-dashboard]').forEach(button => button.addEventListener('click', () => { location.href = button.dataset.dashboard === 'xiaomi' ? '/xiaomi' : '/hero'; }));
-  if (xiaomiEnvironment) {
+  app.querySelectorAll('[data-dashboard]').forEach(button => button.addEventListener('click', () => { location.href = '/' + button.dataset.dashboard; }));
+  if (areaAndinaEnvironment) {
+    shell.dataset.client = 'area-andina';
+    document.title = 'Área Andina · MUSE Loymark';
+    frame.title = 'MUSE Radar · Área Andina';
+    app.querySelector('.page-head h1').textContent = 'Dashboard Estratégico · Área Andina';
+    app.querySelector('.page-head p').textContent = 'Mercado, inversión, búsqueda, conversación y audiencias.';
+    app.querySelector('.brand strong').textContent = 'ÁREA ANDINA';
+    app.querySelector('.client-badge').innerHTML = '<img class="hero-logo" src="/assets/area-andina.png" alt="Área Andina">';
+    app.querySelector('.scope').textContent = 'Área Andina · Radar de mercado universitario';
+    app.querySelector('[data-dashboard="area-andina"]').setAttribute('aria-current', 'page');
+  } else if (xiaomiEnvironment) {
 
     app.querySelector('.scope').textContent = 'Xiaomi · Social Listening Colombia';
     selectDashboard('xiaomi');
@@ -341,12 +353,12 @@ function dashboard(email, clients) {
 async function openPortal() {
   const session = await api('me');
   currentEmail = session.email;
-  const clients = Array.isArray(session.clients) ? session.clients.filter(c => ['hero','xiaomi'].includes(c)) : [];
-  const requested = location.pathname === '/xiaomi' ? 'xiaomi' : location.pathname === '/hero' ? 'hero' : null;
+  const clients = Array.isArray(session.clients) ? session.clients.filter(c => ['hero','xiaomi','area-andina'].includes(c)) : [];
+  const requested = location.pathname === '/area-andina' ? 'area-andina' : location.pathname === '/xiaomi' ? 'xiaomi' : location.pathname === '/hero' ? 'hero' : null;
   if (requested && clients.includes(requested)) return dashboard(session.email, clients);
   stopStars(); stopFigure(); app.className = '';
   document.title = 'Clientes · MUSE Loymark';
-  const catalog = { hero: {name:'HERO',image:'/assets/hero.png',description:'Radar de mercado y motocicletas'}, xiaomi: {name:'Xiaomi',image:'/assets/xiaomi.ico',description:'Social Listening y audiencias'} };
+  const catalog = { 'area-andina': {name:'Área Andina',image:'/assets/area-andina.png',description:'Radar de mercado universitario'}, hero: {name:'HERO',image:'/assets/hero.png',description:'Radar de mercado y motocicletas'}, xiaomi: {name:'Xiaomi',image:'/assets/xiaomi.ico',description:'Social Listening y audiencias'} };
   app.innerHTML = '<div class="client-portal"><header><img src="/assets/muse-blanco.png" alt="MUSE"><span>'+escapeHtml(session.email)+'</span><button id="portal-logout">Cerrar sesión</button></header><main><p class="portal-eyebrow">MUSE · CLIENTES</p><h1>Elige tu cliente</h1><p>Estos son los entornos disponibles para tu cuenta.</p>' + (requested ? '<p role="status">Tu cuenta no tiene acceso al entorno solicitado.</p>' : '') + '<div class="client-grid">' + clients.map(id => '<a class="client-card '+id+'" href="/'+id+'"><img src="'+catalog[id].image+'" alt="'+catalog[id].name+'"><h2>'+catalog[id].name+'</h2><p>'+catalog[id].description+'</p><span>Abrir dashboard →</span></a>').join('') + '</div></main></div>';
   document.getElementById('portal-logout').onclick = async () => { await api('logout','POST'); location.href='/'; };
 }

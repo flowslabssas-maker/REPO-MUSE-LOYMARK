@@ -33,7 +33,9 @@ export function clientsForEmail(email) {
   const normalized = normalizeEmail(email);
   if (!allowed(normalized)) return [];
   if (xiaomiEmail(normalized)) return ['xiaomi'];
-  return BOTH_CLIENTS_EMAILS.has(normalized) ? ['hero', 'xiaomi'] : ['hero'];
+  const clients = BOTH_CLIENTS_EMAILS.has(normalized) ? ['hero', 'xiaomi'] : ['hero'];
+  if (normalized === 'diegodimon1902@gmail.com') clients.push('area-andina');
+  return clients;
 }
 
 export function canAccessClient(session, client) {
