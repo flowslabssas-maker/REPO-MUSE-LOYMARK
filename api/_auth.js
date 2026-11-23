@@ -8,6 +8,7 @@ const BOTH_CLIENTS_EMAILS = new Set([
   'daniela.hernandez@loymark.com',
   'jairo.fandino@loymark.com',
   'santiago.valencia@loymark.com',
+  'santiago.barrera@loymark.com',
   'andres.rojas@ariadnacg.com',
 ]);
 
@@ -34,7 +35,7 @@ export function clientsForEmail(email) {
   if (!allowed(normalized)) return [];
   if (xiaomiEmail(normalized)) return ['xiaomi'];
   const clients = BOTH_CLIENTS_EMAILS.has(normalized) ? ['hero', 'xiaomi'] : ['hero'];
-  if (normalized === 'diegodimon1902@gmail.com') clients.push('area-andina');
+  if (['diegodimon1902@gmail.com', 'santiago.barrera@loymark.com'].includes(normalized)) clients.push('area-andina');
   return clients;
 }
 
