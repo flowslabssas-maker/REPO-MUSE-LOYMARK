@@ -17,6 +17,10 @@
     "api/area-andina.js": {
       "includeFiles": "private/area-andina*{,/**}",
       "maxDuration": 15
+    },
+    "api/area-andina-share.js": {
+      "includeFiles": "private/area-andina*{,/**}",
+      "maxDuration": 15
     }
   },
   "headers": [
@@ -35,6 +39,10 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/compartir/area-andina/:token",
+      "destination": "/api/area-andina-share?token=:token"
+    },
     {
       "source": "/xiaomi",
       "destination": "/index.html"
