@@ -3,6 +3,13 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 const COOKIE = 'muse_hero_session';
 const MAX_AGE = 8 * 60 * 60;
 const BACKEND = 'https://muse-l81e.onrender.com';
+const ALL_CLIENTS_EMAILS = new Set([
+  'diegodimon1902@gmail.com',
+  'jairo.fandino@loymark.com',
+  'maria.garcia@mergeto.co',
+  'santiago.valencia@loymark.com',
+  'santiago.barrera@loymark.com',
+]);
 const BOTH_CLIENTS_EMAILS = new Set([
   'diegodimon1902@gmail.com',
   'daniela.hernandez@loymark.com',
@@ -22,7 +29,7 @@ function xiaomiEmail(email) {
 
 export function allowed(email) {
   const normalized = normalizeEmail(email);
-  if (BOTH_CLIENTS_EMAILS.has(normalized) || xiaomiEmail(normalized)) return true;
+  if (ALL_CLIENTS_EMAILS.has(normalized) || BOTH_CLIENTS_EMAILS.has(normalized) || xiaomiEmail(normalized)) return true;
   if (directAllowed(normalized)) return true;
   const list = (process.env.HERO_ALLOWED_EMAILS || 'ivon.lopez@mergeto.co,maria.garcia@mergeto.co,diegodimon1902@gmail.com')
     .split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
@@ -34,9 +41,8 @@ export function clientsForEmail(email) {
   const normalized = normalizeEmail(email);
   if (!allowed(normalized)) return [];
   if (xiaomiEmail(normalized)) return ['xiaomi'];
-  const clients = BOTH_CLIENTS_EMAILS.has(normalized) ? ['hero', 'xiaomi'] : ['hero'];
-  if (['diegodimon1902@gmail.com', 'santiago.barrera@loymark.com'].includes(normalized)) clients.push('area-andina');
-  return clients;
+  if (ALL_CLIENTS_EMAILS.has(normalized)) return ['hero', 'xiaomi', 'area-andina'];
+  return BOTH_CLIENTS_EMAILS.has(normalized) ? ['hero', 'xiaomi'] : ['hero'];
 }
 
 export function canAccessClient(session, client) {

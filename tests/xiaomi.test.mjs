@@ -10,7 +10,7 @@ const response=()=>({headers:{},setHeader(k,v){this.headers[k]=v},status(n){this
 const request=(query={},auth=true)=>({method:'GET',query,headers:{cookie:auth?'muse_hero_session='+createSession('diegodimon1902@gmail.com','otp'):''}});
 test('explicitly approved users can access both clients without opening access to their domains',async()=>{
   for(const email of ['daniela.hernandez@loymark.com','jairo.fandino@loymark.com','santiago.valencia@loymark.com','andres.rojas@ariadnacg.com']) {
-    assert(allowed(email));assert.deepEqual(clientsForEmail(email.toUpperCase()),['hero','xiaomi']);
+    assert(allowed(email));assert.deepEqual(clientsForEmail(email.toUpperCase()),['jairo.fandino@loymark.com','santiago.valencia@loymark.com'].includes(email) ? ['hero','xiaomi','area-andina'] : ['hero','xiaomi']);
     const req=request();req.headers.cookie='muse_hero_session='+createSession(email,'otp');const r=response();await handler(req,r);assert.equal(r.code,200);
   }
   assert.deepEqual(clientsForEmail('qa@example.test'),['hero']);
