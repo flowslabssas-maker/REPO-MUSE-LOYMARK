@@ -8,3 +8,8 @@ html[data-muse-theme="dark"] .topbar .brand img{background:#fff;border-radius:4p
 @media print{html[data-muse-theme="dark"],html[data-muse-theme="dark"] .au-crm{color-scheme:light;--bg:#fff;--surface:#F6F7F4;--card:#fff;--fg:#414141;--ink:#222;--muted:#666;--line:#E3E6DF;--line-2:#CBD0C4;--aa-dark:#406808;--aa-soft:#F1F7E7;--aa-tint:#DCEDC2}}
 
 .topbar{display:none}.modhead .in{flex-wrap:wrap}.modhead .mh-t{flex:1 1 280px;min-width:0}.modhead .meta{flex:1 1 100%;flex-wrap:wrap}.modhead h1{min-width:0}
+
+/* v1.3 host theme: override package light lock only when MUSE selects dark. */
+html:root[data-muse-theme="dark"],html:root[data-muse-theme="dark"] .au-crm{color-scheme:dark!important;--bg:#14191c!important;--surface:#20272b!important;--card:#1b2226!important;--line:#39444a!important;--line-2:#4a575e!important;--fg:#d6dedf!important;--ink:#f0f4ef!important;--muted:#b1bcb9!important;--faint:#95a39c!important;--aa-dark:#b3db7d!important;--aa-soft:#263323!important;--aa-tint:#364d29!important;--orange-ink:#f3bd71!important;--orange-soft:#3b2e1c!important;--good:#95d49a!important;--good-soft:#21392a!important;--bad:#ffa29b!important;--bad-soft:#412923!important;--neu:#465348!important;--soft:#263323!important;--amber-ink:#e4c88b!important}
+html:root[data-muse-theme="dark"] body{background:var(--bg)!important;color:var(--fg)!important}
+html:root[data-muse-theme="dark"] body :is(select,input,button,table,th,td){color-scheme:dark}
