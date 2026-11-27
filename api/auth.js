@@ -1,5 +1,5 @@
 import { recordHeroLogin } from './_audit.js';
-import { allowed, clearCookie, clientsForEmail, createSession, directAllowed, museOtp, normalizeEmail, readSession, secretReady, sessionCookie } from './_auth.js';
+import { allowed, areaAndinaEmail, clearCookie, clientsForEmail, createSession, directAllowed, museOtp, normalizeEmail, readSession, secretReady, sessionCookie } from './_auth.js';
 
 export default async function handler(request, response) {
   response.setHeader('Cache-Control', 'no-store');
@@ -30,7 +30,8 @@ export default async function handler(request, response) {
       return response.status(200).json({ ok: true, mode: 'direct', email });
     }
     if (action === 'send' || action === 'enter') {
-      const result = await museOtp('send', { email, name: email.split('@')[0], department: 'CLIENT', area: 'HERO', archetype: 'Hermes' });
+      const area = areaAndinaEmail(email) ? 'Área Andina' : 'HERO';
+      const result = await museOtp('send', { email, name: email.split('@')[0], department: 'CLIENT', area, archetype: 'Hermes' });
       return result.result === 'success'
         ? response.status(200).json({ ok: true, mode: 'code' })
         : response.status(502).json({ error: 'No se pudo enviar el código.' });
@@ -40,6 +41,7 @@ export default async function handler(request, response) {
       if (!/^\d{4,8}$/.test(code)) return response.status(400).json({ error: 'Código inválido.' });
       const result = await museOtp('verify', { email, code });
       if (result.result !== 'success') return response.status(401).json({ error: 'Código incorrecto o vencido.' });
+      if (areaAndinaEmail(email) && result.portal !== 'loymark-area-andina') return response.status(401).json({ error: 'Código no válido para este entorno.' });
       const cookie = sessionCookie(createSession(email, 'otp'));
       response.setHeader('Set-Cookie', cookie);
       const session = readSession({ headers: { cookie } });

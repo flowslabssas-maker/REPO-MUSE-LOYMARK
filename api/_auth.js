@@ -3,6 +3,10 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 const COOKIE = 'muse_hero_session';
 const MAX_AGE = 8 * 60 * 60;
 const BACKEND = 'https://muse-l81e.onrender.com';
+const AREA_ANDINA_EMAILS = new Set([
+  'svelandia15@areandina.edu.co',
+  'ngomez123@areandina.edu.co',
+]);
 const ALL_CLIENTS_EMAILS = new Set([
   'diegodimon1902@gmail.com',
   'jairo.fandino@loymark.com',
@@ -23,13 +27,17 @@ export function normalizeEmail(value) {
   return String(value || '').normalize('NFKC').replace(/[\s\p{Cf}]/gu, '').toLowerCase();
 }
 
+export function areaAndinaEmail(email) {
+  return AREA_ANDINA_EMAILS.has(normalizeEmail(email));
+}
+
 function xiaomiEmail(email) {
   return /^[^@\s]+@xiaomi\.com$/.test(normalizeEmail(email));
 }
 
 export function allowed(email) {
   const normalized = normalizeEmail(email);
-  if (ALL_CLIENTS_EMAILS.has(normalized) || BOTH_CLIENTS_EMAILS.has(normalized) || xiaomiEmail(normalized)) return true;
+  if (areaAndinaEmail(normalized) || ALL_CLIENTS_EMAILS.has(normalized) || BOTH_CLIENTS_EMAILS.has(normalized) || xiaomiEmail(normalized)) return true;
   if (directAllowed(normalized)) return true;
   const list = (process.env.HERO_ALLOWED_EMAILS || 'ivon.lopez@mergeto.co,maria.garcia@mergeto.co,diegodimon1902@gmail.com')
     .split(',').map(value => value.trim().toLowerCase()).filter(Boolean);
@@ -40,6 +48,7 @@ export function allowed(email) {
 export function clientsForEmail(email) {
   const normalized = normalizeEmail(email);
   if (!allowed(normalized)) return [];
+  if (areaAndinaEmail(normalized)) return ['area-andina'];
   if (xiaomiEmail(normalized)) return ['xiaomi'];
   if (ALL_CLIENTS_EMAILS.has(normalized)) return ['hero', 'xiaomi', 'area-andina'];
   return BOTH_CLIENTS_EMAILS.has(normalized) ? ['hero', 'xiaomi'] : ['hero'];
@@ -50,7 +59,7 @@ export function canAccessClient(session, client) {
 }
 
 export function directAllowed(email) {
-  if (xiaomiEmail(email)) return false;
+  if (areaAndinaEmail(email) || xiaomiEmail(email)) return false;
   const normalized = normalizeEmail(email);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(normalized)) return false;
   const domains = (process.env.HERO_DIRECT_DOMAINS || 'hmclcolombia.com')
@@ -90,7 +99,8 @@ export function readSession(request) {
   if (expected.length !== received.length || !timingSafeEqual(expected, received)) return null;
   try {
     const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
-    return data.exp > Date.now() && allowed(data.email) ? data : null;
+    const verifiedIdentity = !areaAndinaEmail(data.email) || data.mode === 'otp';
+    return data.exp > Date.now() && allowed(data.email) && verifiedIdentity ? data : null;
   } catch {
     return null;
   }
@@ -105,10 +115,11 @@ export function clearCookie() {
 }
 
 export async function museOtp(path, body) {
+  const scopedBody = areaAndinaEmail(body.email) ? { ...body, portal: 'loymark-area-andina' } : body;
   const response = await fetch(`${BACKEND}/api/analysis/otp/${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify(scopedBody),
     signal: AbortSignal.timeout(45000),
   });
   if (!response.ok) throw new Error(`MUSE OTP returned ${response.status}`);
